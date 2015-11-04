@@ -4,10 +4,10 @@
 % Output:
 % V: node voltages
 G = [2, -1, 0; -1 3 -1; 0 -1 2];
-I = [0, 0, 1]';
+I = [1, 0, 0]';
 
 P = amd(G);
-PT = zeros(1:lenghth(P));
+PT = zeros(1, length(P));
 PT(P) = 1:length(P); % inverse permutation vector
 
 Gp = G(P,P);
@@ -18,7 +18,7 @@ VNaive = G\I;
 
 % FastR approach
 L = chol(Gp);
-x = (L') \ Ip;
-V = (L) \ x;
+x = L'\Ip;
+V = L\x;
 
 V = V(PT);
