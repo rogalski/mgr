@@ -9,6 +9,8 @@ line = fgetl(handle);  % Skip first (comment line)
 % Load resistors
 while ischar(line)
     switch line(1)
+        case '%'
+           % do nothing with comment
         case 'R'
             fields = strsplit(line, ' ');
             node1 = str2double(cell2mat(fields(2)));
