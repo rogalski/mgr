@@ -13,6 +13,9 @@ for k = 1:numel(lower)
     else
         ri = -1/el;
     end
+    if ri == Inf
+        continue
+    end
     r_count = r_count + 1;
     fprintf(handle,'R%i %i %i %f\n', r_count, m, n, ri);
 end
