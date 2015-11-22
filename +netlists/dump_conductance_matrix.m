@@ -1,5 +1,5 @@
 function dump_conductance_matrix( G, handle )
-r_count = uint8(0);
+r_count = uint32(0);
 lower = tril(G);
 for k = 1:numel(lower)
     el = lower(k);

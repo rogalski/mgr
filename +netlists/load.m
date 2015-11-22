@@ -1,7 +1,7 @@
 function [ G ] = load( file )
 resistor_values = [];
 resistor_nodes = [];
-resistors_count = uint8(0);
+resistors_count = uint32(0);
 
 handle = fopen(file);
 line = fgetl(handle);  % Skip first (comment line)
