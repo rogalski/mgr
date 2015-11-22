@@ -85,5 +85,21 @@ for comp_id = 1:length(components_ids)
         G(port2, port1) = -1/R;
     else
         disp('Do nothing')
-    end 
+    end
+    
+C = ones(1, length(G));
+C(Terminals) = 2;
+P = camd(G, camd, C);
+
+for n=1:length(P)
+    g11 = find(G(:,n) ~= 0);
+    G11 = G(g11,g11);
+    G12 = G(g11,n);
+    G21 = G(n,g11);
+    G22 = G(n,n);
+
+    Gr = G11-(G12*inv(G22)*G21);
+    n
+    Gr
+end
 end
