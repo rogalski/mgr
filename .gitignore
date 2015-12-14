@@ -16,5 +16,4 @@
 slprj/
 
 # External libraries
-matlab_bgl
-SuiteSparse
+third_party/
