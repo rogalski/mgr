@@ -17,3 +17,6 @@ slprj/
 
 # External libraries
 third_party/
+
+# PyCharm project
+.idea/
