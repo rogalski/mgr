@@ -20,3 +20,6 @@ third_party/
 
 # PyCharm project
 .idea/
+
+# Publish output
+html/
