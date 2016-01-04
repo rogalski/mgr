@@ -3,7 +3,7 @@
 % implemented  / known in this codebase for now.
 
 %% Input data preparation
-load('/Users/rogalski/Documents/MATLAB/mgr/third_party/SuiteSparse/UFget/mat/HB/494_bus.mat')
+load('third_party/SuiteSparse/UFget/mat/HB/494_bus.mat')
 
 %% Original matrix
 A = Problem.A;
