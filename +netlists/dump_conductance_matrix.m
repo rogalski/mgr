@@ -17,6 +17,6 @@ for k = 1:numel(lower)
         continue
     end
     r_count = r_count + 1;
-    fprintf(handle,'R%i %i %i %f\n', r_count, m, n, ri);
+    fprintf(handle,'R%i %i %i %s\n', r_count, m, n, num2str(ri));
 end
 end
