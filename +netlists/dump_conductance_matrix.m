@@ -13,7 +13,7 @@ for k = 1:numel(lower)
     else
         ri = -1/el;
     end
-    if ri >= 2e12
+    if abs(ri) >= 2e12
         continue
     end
     r_count = r_count + 1;
