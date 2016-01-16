@@ -23,3 +23,6 @@ third_party/
 
 # Publish output
 html/
+
+# Private files
+_*
