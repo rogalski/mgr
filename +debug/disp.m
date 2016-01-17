@@ -1,7 +1,7 @@
-function disp( varargin )
+function disp( s )
 global DEBUG
 if all(exist('DEBUG', 'var')) && all(DEBUG)
-    disp(varargin{:})
+    disp(s)
     snapnow;
 end
 end
