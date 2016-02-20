@@ -3,7 +3,6 @@
 % Terminals: list of nodes which are terminals
 % Output data
 % G: reduced equivalent of G
-
 assert(isempty(Terminals(Terminals > length(G))))
 
 % TODO: Connected graph assumed.
@@ -14,7 +13,7 @@ assert(isempty(Terminals(Terminals > length(G))))
 [articulation_nodes, twoconnected_components] = biconnected_components(G);
 
 % Set diagonal to zero
-twoconnected_components(logical(eye(size(twoconnected_components)))) = 0;
+twoconnected_components(logical(speye(size(twoconnected_components)))) = 0;
 
 % 4. For every two-connected component
 components_ids = nonzeros(unique(twoconnected_components));
@@ -29,45 +28,21 @@ for comp_id = 1:length(components_ids)
     a_node_count = length(a_nodes_in_component);
 
     if terminal_count == 0 && a_node_count == 1
-        disp('Remove all resistors and keep articulation node')
+        % Dangling network: remove all resistors and keep articulation node'
         articulation_node = a_nodes_in_component(1);
         g = sum(G(articulation_node, component_nodes));
         G(component_nodes, component_nodes) = 0;
         G(articulation_node, articulation_node) = g;
-    elseif a_node_count == 2
-        disp('Reduce to single equivalent resistor (two articulation nodes)')
-        if length(component_nodes) == 2
-            disp('Nothing to reduce')
-            continue  % nothing to reduce
-        end
+    elseif length(component_nodes) == 2
+        continue
+    elseif a_node_count == 2 || (terminal_count == 1 && a_node_count == 1)
+        % Reduce to single equivalent resistor
         port1 = a_nodes_in_component(1);
-        port2 = a_nodes_in_component(2);
-
-        e1 = zeros(length(G), 1);
-        e2 = zeros(length(G), 1);
-        e1(port1) = 1;
-        e2(port2) = 1;
-        L = chol(G);
-        u = L\(e2-e1);
-        R = u'*u;
-
-        gp1 = sum(G(port1, component_nodes));
-        gp2 = sum(G(port2, component_nodes));
-        G(component_nodes, component_nodes) = 0;
-        G(port1, port1) = gp1 + 1/R;
-        G(port2, port2) = gp2 + 1/R;
-        G(port1, port2) = -1/R;
-        G(port2, port1) = -1/R;
-
-    elseif terminal_count == 1 && a_node_count == 1
-        disp('Reduce to single equivalent resistor (one term, one articulation node)')
-        if length(component_nodes) == 2
-            disp('Nothing to reduce')
-            continue  % nothing to reduce
+        if isempty(terminals_in_component)
+            port2 = a_nodes_in_component(2);
+        else
+            port2 = terminals_in_component(1);
         end
-        port1 = terminals_in_component(1);
-        port2 = a_nodes_in_component(1);
-
         e1 = zeros(length(G), 1);
         e2 = zeros(length(G), 1);
         e1(port1) = 1;
@@ -84,12 +59,29 @@ for comp_id = 1:length(components_ids)
         G(port1, port2) = -1/R;
         G(port2, port1) = -1/R;
     else
-        disp('Do nothing')
+        % Triconnected components 
+        biconn_comp_copy = twoconnected_component;
+        biconn_comp_copy(~any(biconn_comp_copy,2), :) = [];
+        biconn_comp_copy(:, ~any(biconn_comp_copy,1)) = [];
+        [edges, types] = TricComp(biconn_comp_copy);
+        types
+        clear twoconnected_component_copy
     end
-    
-C = ones(1, length(G));
-C(Terminals) = 2;
-P = camd(G, camd, C);
+end
+return
+
+% TODO: node reductions will be next step
+NewTerminalsMask = zeros(1,length(G));
+NewTerminalsMask(Terminals) = 1;
+nodes_to_remove = find(all(G==0,2));
+G(nodes_to_remove, :) = [];
+G(:, nodes_to_remove) = [];
+NewTerminalsMask(nodes_to_remove) = [];
+NewTerminals = find(NewTerminalsMask);
+
+constrains = ones(1, length(G));
+constrains(NewTerminals) = 2;
+P = camd(G, camd, constrains);
 
 for n=1:length(P)
     g11 = find(G(:,n) ~= 0);
@@ -97,9 +89,9 @@ for n=1:length(P)
     G12 = G(g11,n);
     G21 = G(n,g11);
     G22 = G(n,n);
+    Grepl = G11-(G12*inv(G22)*G21);
+end
 
-    Gr = G11-(G12*inv(G22)*G21);
-    n
-    Gr
-end
-end
+nodes_to_remove = find(all(G==0,2));
+G(nodes_to_remove, :) = [];
+G(:, nodes_to_remove) = [];
