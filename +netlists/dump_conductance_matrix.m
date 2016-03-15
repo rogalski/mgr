@@ -1,14 +1,16 @@
 function dump_conductance_matrix( G, handle )
 r_count = uint32(0);
 lower = tril(G);
-for k = 1:numel(lower)
-    el = lower(k);
-    if el == 0
-        continue
-    end
-    [m, n] = ind2sub(size(G), k);
+s = size(G);
+sums = sum(G, 2);
+nz = find(lower);
+
+for k = 1:length(nz)
+    nz_k = nz(k);
+    el = lower(nz_k);
+    [m, n] = ind2sub(s, nz_k);
     if m == n
-        ri = 1/sum(G(m, :));
+        ri = 1/sums(m);
         n = 0;  % GND
     else
         ri = -1/el;
