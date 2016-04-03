@@ -26,3 +26,7 @@ html/
 
 # Private files
 _*
+
+# Spice circuits and raw circuits
+*.cir
+*.txt
