@@ -110,7 +110,6 @@ for conn_comp_i = 1:length(unique_connected_components)
             end
             %}
         end
-        continue
         constrains = ones(1, length(conn_comp_G));
         constrains(conn_comp_ExtNodes) = 2;
         P2 = camd(conn_comp_G, camd, constrains);
@@ -119,7 +118,9 @@ for conn_comp_i = 1:length(unique_connected_components)
         for k=1:total_nodes_to_analyze
             n = P2(k);
             g11 = find(conn_comp_G(:, n));
-            
+            if isempty(g11)
+                continue
+            end
             % CSR sparse matrix - selecting columns first, then rows is quicker
             G11_columns = conn_comp_G(:,g11);
             G11 = G11_columns(g11,:);
