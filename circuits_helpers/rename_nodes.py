@@ -4,8 +4,6 @@ with open("edges.txt") as f:
         node1, node2 = l.split()
         seen.add(int(node1))
         seen.add(int(node2))
-        if len(seen) == 100000:
-            break
 
 mapping = {v: str(i) for i, v in enumerate(seen, start=1)}
 
