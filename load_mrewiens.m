@@ -19,5 +19,6 @@ if ~exist('A', 'var')
                [MRewiensEdges(:, 2); MRewiensEdges(:,1 );], ...
                ones(1, numel(MRewiensEdges)));    
 end
-IsExternalNode = zeros(1, m);
-IsExternalNode(MRewiensTerminals) = 1;
+IsExtNode = zeros(1, m);
+IsExtNode(MRewiensTerminals) = 1;
+ExtNodes = MRewiensTerminals;
