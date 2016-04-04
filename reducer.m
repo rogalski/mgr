@@ -6,7 +6,6 @@
 
 % Output data
 % G: reduced equivalent of G
-
 assert(all(size(G) == size(A)));
 assert(length(IsExtNode) == size(G, 1));
 
@@ -25,8 +24,7 @@ for conn_comp_i = 1:length(unique_connected_components)
     
     % 2. For every connected component Gi in G with one or more terminals
     if length(conn_comp_ExtNodes) < 1
-        disp "Nets may be removed entirely"
-        continue
+        continue  % Nets may be removed entirely
     end
     % 3. Compute the two-connected components Gi(2) of Gi
     [articulation_nodes, biconn_components] = biconnected_components(conn_comp_A);
@@ -51,21 +49,20 @@ for conn_comp_i = 1:length(unique_connected_components)
             conn_comp_G(articulation_node, articulation_node) = g;
         elseif length(biconn_comp_nodes) == 2
             continue
-        elseif a_node_count == 2 || (terminal_count == 1 && a_node_count == 1)
+        elseif (a_node_count == 2 && terminal_count == 0) || (a_node_count == 1 && terminal_count == 1)
             % 7. - 10. Reduce to single equivalent resistor
             port1 = a_nodes_in_component(1);
-            if isempty(ExtNodes_in_component)
+            if a_node_count == 2
                 port2 = a_nodes_in_component(2);
             else
                 port2 = ExtNodes_in_component(1);
             end
-            
             % A(component_nodes, component_nodes) = 0;
             % A(port1, port2) = 1;
             % A(port2, port1) = 1;
-            
             to_remove = biconn_comp_nodes(biconn_comp_nodes ~= port1 & biconn_comp_nodes ~= port2);
             to_keep = [port1 port2];
+            
             G11 = conn_comp_G(to_keep, to_keep);
             G12 = conn_comp_G(to_keep, to_remove);
             G22 = conn_comp_G(to_remove, to_remove);
@@ -113,6 +110,7 @@ for conn_comp_i = 1:length(unique_connected_components)
             end
             %}
         end
+        continue
         constrains = ones(1, length(conn_comp_G));
         constrains(conn_comp_ExtNodes) = 2;
         P2 = camd(conn_comp_G, camd, constrains);
