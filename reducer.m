@@ -1,97 +1,146 @@
 % Input data
-% G: conductance matrix
-% Terminals: list of nodes which are terminals
+% G: Conductance matrix
+% A: Adjacency matrix
+% ExtNodes: numbers of external nodes
+% IsExtNode: vector of flags if node is external
+
 % Output data
 % G: reduced equivalent of G
-assert(isempty(Terminals(Terminals > length(G))))
 
-% TODO: Connected graph assumed.
-% Add steps 1, 2 from Romms and Schilders algorithm
+assert(all(size(G) == size(A)));
+assert(length(IsExtNode) == size(G, 1));
 
-% 3. Compute the two-connected components Gi(2) of Gi
-% https://en.wikipedia.org/wiki/Biconnected_component
-[articulation_nodes, twoconnected_components] = biconnected_components(G);
+% 1. Compute connected components Gi of G
+connected_components = components(A);
 
-% Set diagonal to zero
-twoconnected_components(logical(speye(size(twoconnected_components)))) = 0;
+unique_connected_components = unique(connected_components);
 
-% 4. For every two-connected component
-components_ids = nonzeros(unique(twoconnected_components));
-for comp_id = 1:length(components_ids)
-    twoconnected_component = (twoconnected_components == comp_id);
-    [row, col] = find(twoconnected_component);
-
-    component_nodes = unique([row col]);
-    terminals_in_component = intersect(component_nodes, Terminals);
-    a_nodes_in_component = intersect(component_nodes, articulation_nodes);
-    terminal_count = length(terminals_in_component);
-    a_node_count = length(a_nodes_in_component);
-
-    if terminal_count == 0 && a_node_count == 1
-        % Dangling network: remove all resistors and keep articulation node'
-        articulation_node = a_nodes_in_component(1);
-        g = sum(G(articulation_node, component_nodes));
-        G(component_nodes, component_nodes) = 0;
-        G(articulation_node, articulation_node) = g;
-    elseif length(component_nodes) == 2
+for conn_comp_i = 1:length(unique_connected_components)
+    conn_comp_id = unique_connected_components(conn_comp_i);
+    conn_comp_sel = (connected_components == conn_comp_id);
+    
+    conn_comp_A = A(conn_comp_sel, conn_comp_sel);
+    conn_comp_G = G(conn_comp_sel, conn_comp_sel);
+    conn_comp_ExtNodes = find(IsExtNode(conn_comp_sel));
+    
+    % 2. For every connected component Gi in G with one or more terminals
+    if length(conn_comp_ExtNodes) < 1
+        disp "Nets may be removed entirely"
         continue
-    elseif a_node_count == 2 || (terminal_count == 1 && a_node_count == 1)
-        % Reduce to single equivalent resistor
-        port1 = a_nodes_in_component(1);
-        if isempty(terminals_in_component)
-            port2 = a_nodes_in_component(2);
-        else
-            port2 = terminals_in_component(1);
-        end
-        e1 = zeros(length(G), 1);
-        e2 = zeros(length(G), 1);
-        e1(port1) = 1;
-        e2(port2) = 1;
-        L = chol(G);
-        u = L\(e2-e1);
-        R = u'*u;
-        
-        gp1 = sum(G(port1, component_nodes));
-        gp2 = sum(G(port2, component_nodes));
-        G(component_nodes, component_nodes) = 0;
-        G(port1, port1) = gp1 + 1/R;
-        G(port2, port2) = gp2 + 1/R;
-        G(port1, port2) = -1/R;
-        G(port2, port1) = -1/R;
-    else
-        % Triconnected components 
-        biconn_comp_copy = twoconnected_component;
-        biconn_comp_copy(~any(biconn_comp_copy,2), :) = [];
-        biconn_comp_copy(:, ~any(biconn_comp_copy,1)) = [];
-        [edges, types] = TricComp(biconn_comp_copy);
-        types
-        clear twoconnected_component_copy
     end
+    % 3. Compute the two-connected components Gi(2) of Gi
+    [articulation_nodes, biconn_components] = biconnected_components(conn_comp_A);
+    biconn_comp_ids = nonzeros(unique(biconn_components));
+    % 4. For every two-connected component Gi(2) of Gi
+    for biconn_comp_i = 1:length(biconn_comp_ids)
+        biconn_comp_id = biconn_comp_ids(biconn_comp_i);
+        [found_in_rows, ~] = find(biconn_components == biconn_comp_id);
+        biconn_comp_nodes = unique(found_in_rows);
+        ExtNodes_in_component = intersect(biconn_comp_nodes, conn_comp_ExtNodes);
+        a_nodes_in_component = intersect(biconn_comp_nodes, articulation_nodes);
+        non_removable_nodes_in_component = [ExtNodes_in_component; a_nodes_in_component];
+        terminal_count = length(ExtNodes_in_component);
+        a_node_count = length(a_nodes_in_component);
+        clear found_in_rows
+        if terminal_count == 0 && a_node_count == 1
+            % 5. - 6. Dangling node
+            articulation_node = a_nodes_in_component(1);
+            % A(component_nodes, component_nodes) = 0;
+            g = sum(conn_comp_G(articulation_node, biconn_comp_nodes));
+            conn_comp_G(biconn_comp_nodes, biconn_comp_nodes) = 0;
+            conn_comp_G(articulation_node, articulation_node) = g;
+        elseif length(biconn_comp_nodes) == 2
+            continue
+        elseif a_node_count == 2 || (terminal_count == 1 && a_node_count == 1)
+            % 7. - 10. Reduce to single equivalent resistor
+            port1 = a_nodes_in_component(1);
+            if isempty(ExtNodes_in_component)
+                port2 = a_nodes_in_component(2);
+            else
+                port2 = ExtNodes_in_component(1);
+            end
+            
+            % A(component_nodes, component_nodes) = 0;
+            % A(port1, port2) = 1;
+            % A(port2, port1) = 1;
+            
+            to_remove = biconn_comp_nodes(biconn_comp_nodes ~= port1 & biconn_comp_nodes ~= port2);
+            to_keep = [port1 port2];
+            G11 = conn_comp_G(to_keep, to_keep);
+            G12 = conn_comp_G(to_keep, to_remove);
+            G22 = conn_comp_G(to_remove, to_remove);
+            Gp = G11-(G12*(G22\(G12')));
+            conn_comp_G(biconn_comp_nodes, biconn_comp_nodes) = 0;
+            conn_comp_G(to_keep, to_keep) = Gp;
+            clear G11 G12 G22 Gp to_remove to_keep
+        else
+            continue
+            %{
+            twoconnected_component = conn_comp_G(component_nodes, component_nodes);
+            twoconnected_component(logical(speye(size(twoconnected_component)))) = 0;
+            [edges, types, virt_edges] = TricComp(twoconnected_component);
+            triconnected_components = twoconnected_component;
+            triconnected_components(component_nodes, component_nodes) = edges;
+            for t=1:length(types)
+                if types(t) ~= 1
+                    continue
+                end
+                tric_comp = triconnected_components == t;
+                [found_in_rows_tric, ~] = find(tric_comp);
+                tric_comp_nodes = unique(found_in_rows_tric);
+                if length(tric_comp_nodes) <= 2
+                    continue
+                end
+                if virt_edges(1, t) == 0 || virt_edges(2, t) == 0
+                    continue
+                end
+                port1 = component_nodes(virt_edges(1, t));
+                port2 = component_nodes(virt_edges(2, t));
+                ExtNodes_in_tric_comp = intersect(tric_comp_nodes, ExtNodes);
+
+                to_keep = unique([port1; port2; ExtNodes_in_tric_comp]);
+                to_remove = setdiff(tric_comp_nodes, to_keep);
+                if isempty(to_remove)
+                    continue
+                end
+
+                G11 = G(to_keep, to_keep);
+                G12 = G(to_keep, to_remove);
+                G22 = G(to_remove, to_remove);
+                Gn = G11-(G12*(G22\(G12')));
+                G(to_keep, to_keep) = Gn;
+                clear G11 G12 G22 Gn
+            end
+            %}
+        end
+        constrains = ones(1, length(conn_comp_G));
+        constrains(conn_comp_ExtNodes) = 2;
+        P2 = camd(conn_comp_G, camd, constrains);
+        
+        total_nodes_to_analyze = length(nonzeros(constrains == 1));
+        for k=1:total_nodes_to_analyze
+            n = P2(k);
+            g11 = find(conn_comp_G(:, n));
+            
+            % CSR sparse matrix - selecting columns first, then rows is quicker
+            G11_columns = conn_comp_G(:,g11);
+            G11 = G11_columns(g11,:);
+            
+            % Same as above
+            G12_columns = conn_comp_G(:,n);
+            G12 = G12_columns(g11,:);
+            
+            G22 = conn_comp_G(n,n);
+            
+            Gp = G11-(G12*(G22\G12'));
+            
+            if nnz(G11) >= nnz(Gp)
+                % CSR sparse matrix...
+                G11_columns(g11, :) = Gp;
+                conn_comp_G(:,g11) = G11_columns;
+            end
+            clear g11 G11 G12 G22 Gp G11_columns G12_columns
+        end
+    end
+    G(conn_comp_sel, conn_comp_sel) = conn_comp_G;
 end
-return
-
-% TODO: node reductions will be next step
-NewTerminalsMask = zeros(1,length(G));
-NewTerminalsMask(Terminals) = 1;
-nodes_to_remove = find(all(G==0,2));
-G(nodes_to_remove, :) = [];
-G(:, nodes_to_remove) = [];
-NewTerminalsMask(nodes_to_remove) = [];
-NewTerminals = find(NewTerminalsMask);
-
-constrains = ones(1, length(G));
-constrains(NewTerminals) = 2;
-P = camd(G, camd, constrains);
-
-for n=1:length(P)
-    g11 = find(G(:,n) ~= 0);
-    G11 = G(g11,g11);
-    G12 = G(g11,n);
-    G21 = G(n,g11);
-    G22 = G(n,n);
-    Grepl = G11-(G12*inv(G22)*G21);
-end
-
-nodes_to_remove = find(all(G==0,2));
-G(nodes_to_remove, :) = [];
-G(:, nodes_to_remove) = [];
