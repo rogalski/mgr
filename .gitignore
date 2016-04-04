@@ -24,9 +24,9 @@ third_party/
 # Publish output
 html/
 
-# Private files
-_*
-
 # Spice circuits and raw circuits
 *.cir
 *.txt
+
+circuits/
+
