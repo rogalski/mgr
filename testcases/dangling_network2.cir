@@ -1,8 +1,0 @@
-% Given terminals in nodes (1, 2) articulation node 3 would be a separator
-% to dangling network which should be reduced.
-R1 1 2 5
-R2 2 3 1
-R3 3 4 1
-R4 4 5 1
-R4 5 6 1
-R4 6 3 1
