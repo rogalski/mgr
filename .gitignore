@@ -27,6 +27,8 @@ html/
 # Spice circuits and raw circuits
 *.cir
 *.txt
+*.raw
+*.log
 
 circuits/
 
