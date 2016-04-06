@@ -21,9 +21,14 @@ for conn_comp_i = 1:length(unique_connected_components)
     conn_comp_A = A(conn_comp_sel, conn_comp_sel);
     conn_comp_G = G(conn_comp_sel, conn_comp_sel);
     conn_comp_ExtNodes = find(IsExtNode(conn_comp_sel));
-    
+
+    if ~nnz(conn_comp_G)
+       continue 
+    end
+
     % 2. For every connected component Gi in G with one or more terminals
     if length(conn_comp_ExtNodes) < 1
+        G(conn_comp_sel, conn_comp_sel) = 0;
         continue  % Nets may be removed entirely
     end
     % 3. Compute the two-connected components Gi(2) of Gi
@@ -62,7 +67,6 @@ for conn_comp_i = 1:length(unique_connected_components)
             % A(port2, port1) = 1;
             to_remove = biconn_comp_nodes(biconn_comp_nodes ~= port1 & biconn_comp_nodes ~= port2);
             to_keep = [port1 port2];
-            
             G11 = conn_comp_G(to_keep, to_keep);
             G12 = conn_comp_G(to_keep, to_remove);
             G22 = conn_comp_G(to_remove, to_remove);
@@ -110,36 +114,38 @@ for conn_comp_i = 1:length(unique_connected_components)
             end
             %}
         end
-        constrains = ones(1, length(conn_comp_G));
-        constrains(conn_comp_ExtNodes) = 2;
-        P2 = camd(conn_comp_G, camd, constrains);
-        
-        total_nodes_to_analyze = length(nonzeros(constrains == 1));
-        for k=1:total_nodes_to_analyze
-            n = P2(k);
-            g11 = find(conn_comp_G(:, n));
-            if isempty(g11)
-                continue
-            end
-            % CSR sparse matrix - selecting columns first, then rows is quicker
-            G11_columns = conn_comp_G(:,g11);
-            G11 = G11_columns(g11,:);
-            
-            % Same as above
-            G12_columns = conn_comp_G(:,n);
-            G12 = G12_columns(g11,:);
-            
-            G22 = conn_comp_G(n,n);
-            
-            Gp = G11-(G12*(G22\G12'));
-            
-            if nnz(G11) >= nnz(Gp)
-                % CSR sparse matrix...
-                G11_columns(g11, :) = Gp;
-                conn_comp_G(:,g11) = G11_columns;
-            end
-            clear g11 G11 G12 G22 Gp G11_columns G12_columns
+    end
+    disp('done connected components')
+
+    constrains = ones(1, length(conn_comp_G));
+    constrains(conn_comp_ExtNodes) = 2;
+    Perm = camd(conn_comp_G, camd, constrains);
+
+    reducedG = conn_comp_G(Perm, Perm);
+    total_nodes_to_analyze = length(nonzeros(constrains == 1));
+    
+    original_cost = nnz(triu(conn_comp_G, 1));
+    current_cost = original_cost;
+    % eliminate node one-by-one
+    for nodes_eliminated=1:total_nodes_to_analyze
+        G11 = reducedG(1, 1);  % nodes to eliminate
+        G12 = reducedG(1, 2:end);
+        G22 = reducedG(2:end, 2:end);  % nodes to keep
+        % Gp = G11-(G12*(G22\G12'));
+        Gp = G22 + G12' * (-G11\G12);
+        new_cost = nnz(triu(Gp, 1));
+        if new_cost > current_cost
+            nodes_eliminated = nodes_eliminated - 1; %#ok<FXSET>
+            break  % stop reduction - fill-in is bigger
+        else
+            reducedG = Gp;
+            current_cost = new_cost;
         end
     end
-    G(conn_comp_sel, conn_comp_sel) = conn_comp_G;
+    % Substitute circuit in original G in correct positions
+    local_nodes_left = Perm(nodes_eliminated+1:end);
+    local_nodes_in_global_circuit = find(conn_comp_sel);
+    global_nodes_left = local_nodes_in_global_circuit(local_nodes_left);
+    G(conn_comp_sel, conn_comp_sel) = 0;
+    G(global_nodes_left, global_nodes_left) = reducedG;
 end
