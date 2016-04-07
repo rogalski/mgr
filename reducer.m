@@ -75,7 +75,6 @@ for conn_comp_i = 1:length(unique_connected_components)
             conn_comp_G(to_keep, to_keep) = Gp;
             clear G11 G12 G22 Gp to_remove to_keep
         else
-            continue
             %{
             twoconnected_component = conn_comp_G(component_nodes, component_nodes);
             twoconnected_component(logical(speye(size(twoconnected_component)))) = 0;
@@ -115,35 +114,43 @@ for conn_comp_i = 1:length(unique_connected_components)
             %}
         end
     end
-    disp('done connected components')
+    if(length(conn_comp_ExtNodes) == length(conn_comp_G))
+       continue
+    end
+    
+    % TODO: Check upper bound and eliminate all resistors if we know we can
+    num_resistors = nnz(triu(conn_comp_G));
+    num_terminals = length(conn_comp_ExtNodes);
+    num_resistors_upper_bound = num_terminals * (num_terminals - 1) / 2;
 
+    % Eliminate nodes one-by-one
     constrains = ones(1, length(conn_comp_G));
     constrains(conn_comp_ExtNodes) = 2;
     Perm = camd(conn_comp_G, camd, constrains);
 
-    reducedG = conn_comp_G(Perm, Perm);
-    total_nodes_to_analyze = length(nonzeros(constrains == 1));
-    
+    Gp = conn_comp_G(Perm, Perm);
+    nodes_to_eliminate = length(conn_comp_G) - length(conn_comp_ExtNodes);
     original_cost = nnz(triu(conn_comp_G, 1));
-    current_cost = original_cost;
+    threshold_cost = original_cost;
+    
     % eliminate node one-by-one
-    for nodes_eliminated=1:total_nodes_to_analyze
-        G11 = reducedG(1, 1);  % nodes to eliminate
-        G12 = reducedG(1, 2:end);
-        G22 = reducedG(2:end, 2:end);  % nodes to keep
+    min_fillin_nodes_eliminated = 0;
+    for nodes_eliminated=1:nodes_to_eliminate
+        G11 = Gp(1, 1);
+        G12 = Gp(1, 2:end);
+        G22 = Gp(2:end, 2:end);  % nodes to keep
         % Gp = G11-(G12*(G22\G12'));
         Gp = G22 + G12' * (-G11\G12);
-        new_cost = nnz(triu(Gp, 1));
-        if new_cost > current_cost
-            nodes_eliminated = nodes_eliminated - 1; %#ok<FXSET>
-            break  % stop reduction - fill-in is bigger
-        else
+        cost = nnz(triu(Gp, 1));
+        if cost <= threshold_cost
+            threshold_cost = cost;
             reducedG = Gp;
-            current_cost = new_cost;
+            min_fillin_nodes_eliminated = nodes_eliminated;
         end
     end
+
     % Substitute circuit in original G in correct positions
-    local_nodes_left = Perm(nodes_eliminated+1:end);
+    local_nodes_left = Perm(min_fillin_nodes_eliminated+1:end);
     local_nodes_in_global_circuit = find(conn_comp_sel);
     global_nodes_left = local_nodes_in_global_circuit(local_nodes_left);
     G(conn_comp_sel, conn_comp_sel) = 0;
