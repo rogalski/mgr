@@ -70,9 +70,9 @@ for conn_comp_i = 1:length(unique_connected_components)
             G11 = conn_comp_G(to_keep, to_keep);
             G12 = conn_comp_G(to_keep, to_remove);
             G22 = conn_comp_G(to_remove, to_remove);
-            Gp = G11-(G12*(G22\(G12')));
+            Gi = G11-(G12*(G22\(G12')));
             conn_comp_G(biconn_comp_nodes, biconn_comp_nodes) = 0;
-            conn_comp_G(to_keep, to_keep) = Gp;
+            conn_comp_G(to_keep, to_keep) = Gi;
             clear G11 G12 G22 Gp to_remove to_keep
         else
             %{
@@ -128,24 +128,24 @@ for conn_comp_i = 1:length(unique_connected_components)
     constrains(conn_comp_ExtNodes) = 2;
     Perm = camd(conn_comp_G, camd, constrains);
 
-    Gp = conn_comp_G(Perm, Perm);
+    Gi = conn_comp_G(Perm, Perm);
     nodes_to_eliminate = length(conn_comp_G) - length(conn_comp_ExtNodes);
     original_cost = nnz(triu(conn_comp_G, 1));
     threshold_cost = original_cost;
     
-    % eliminate node one-by-one
+    % eliminate node one-by-one, remember system of smallest cost function
     min_fillin_nodes_eliminated = 0;
     for nodes_eliminated=1:nodes_to_eliminate
-        G11 = Gp(1, 1);
-        G12 = Gp(1, 2:end);
-        G22 = Gp(2:end, 2:end);  % nodes to keep
+        G11 = Gi(1, 1);
+        G12 = Gi(1, 2:end);
+        G22 = Gi(2:end, 2:end);
         % Gp = G11-(G12*(G22\G12'));
-        Gp = G22 + G12' * (-G11\G12);
-        cost = nnz(triu(Gp, 1));
+        Gi = G22 - G12' * (G11\G12);
+        cost = nnz(triu(Gi, 1));
         if cost <= threshold_cost
             threshold_cost = cost;
-            reducedG = Gp;
             min_fillin_nodes_eliminated = nodes_eliminated;
+            bestG = Gi;
         end
     end
 
@@ -154,5 +154,5 @@ for conn_comp_i = 1:length(unique_connected_components)
     local_nodes_in_global_circuit = find(conn_comp_sel);
     global_nodes_left = local_nodes_in_global_circuit(local_nodes_left);
     G(conn_comp_sel, conn_comp_sel) = 0;
-    G(global_nodes_left, global_nodes_left) = reducedG;
+    G(global_nodes_left, global_nodes_left) = bestG;
 end

@@ -1,9 +1,14 @@
 clear all
 close all
-CIRCUIT_NAME = 'r_network_int46k_ext8k_res67k_public'
+CIRCUIT_NAME = 'lr_fake1'
 tic
-load_rommes
-netlists.dump('run_in.cir', G);
+load_mrewiens
+num_terminals = length(find(IsExtNode == 1))
+num_nodes_prev = length(find(any(G,2)))
+num_res_prev = count_resistors(G)
+metisreorder(G)
+IsExtNode
 reducer
-netlists.dump('run_out.cir', G);
+num_nodes_post = length(find(any(G,2)))
+num_res_post = count_resistors(G)
 toc
