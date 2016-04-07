@@ -33,3 +33,6 @@ html/
 circuits/
 
 Mondriaan.defaults
+
+*.dot
+*.png
