@@ -124,35 +124,8 @@ for conn_comp_i = 1:length(unique_connected_components)
     num_resistors_upper_bound = num_terminals * (num_terminals - 1) / 2;
 
     % Eliminate nodes one-by-one
-    constrains = ones(1, length(conn_comp_G));
-    constrains(conn_comp_ExtNodes) = 2;
-    Perm = camd(conn_comp_G, camd, constrains);
+    nodewise_camd;
 
-    Gi = conn_comp_G(Perm, Perm);
-    nodes_to_eliminate = length(conn_comp_G) - length(conn_comp_ExtNodes);
-    original_cost = nnz(triu(conn_comp_G, 1));
-    threshold_cost = original_cost;
-    
-    % eliminate node one-by-one, remember system of smallest cost function
-    min_fillin_nodes_eliminated = 0;
-    for nodes_eliminated=1:nodes_to_eliminate
-        G11 = Gi(1, 1);
-        G12 = Gi(1, 2:end);
-        G22 = Gi(2:end, 2:end);
-        % Gp = G11-(G12*(G22\G12'));
-        Gi = G22 - G12' * (G11\G12);
-        cost = nnz(triu(Gi, 1));
-        if cost <= threshold_cost
-            threshold_cost = cost;
-            min_fillin_nodes_eliminated = nodes_eliminated;
-            bestG = Gi;
-        end
-    end
-
-    % Substitute circuit in original G in correct positions
-    local_nodes_left = Perm(min_fillin_nodes_eliminated+1:end);
-    local_nodes_in_global_circuit = find(conn_comp_sel);
-    global_nodes_left = local_nodes_in_global_circuit(local_nodes_left);
     G(conn_comp_sel, conn_comp_sel) = 0;
     G(global_nodes_left, global_nodes_left) = bestG;
 end
