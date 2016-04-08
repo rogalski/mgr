@@ -118,11 +118,6 @@ for conn_comp_i = 1:length(unique_connected_components)
        continue
     end
     
-    % TODO: Check upper bound and eliminate all resistors if we know we can
-    num_resistors = nnz(triu(conn_comp_G));
-    num_terminals = length(conn_comp_ExtNodes);
-    num_resistors_upper_bound = num_terminals * (num_terminals - 1) / 2;
-
     % Eliminate nodes one-by-one
     nodewise_camd;
 
