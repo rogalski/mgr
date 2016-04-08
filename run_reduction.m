@@ -1,14 +1,12 @@
 clear all
 close all
-CIRCUIT_NAME = 'lr_fake1'
+CIRCUIT_NAME = 'r_network_int48k_ext8k_res75k_public'
+load_rommes
+circuit_info(G, IsExtNode)
+% netlists.dump('1.cir', G, ExtNodes);
+% dotfiles.dump('1.dot', G, ExtNodes, 1);
 tic
-load_mrewiens
-num_terminals = length(find(IsExtNode == 1))
-num_nodes_prev = length(find(any(G,2)))
-num_res_prev = count_resistors(G)
-metisreorder(G)
-IsExtNode
-reducer
-num_nodes_post = length(find(any(G,2)))
-num_res_post = count_resistors(G)
+reducer;
 toc
+circuit_info(G, IsExtNode)
+% dotfiles.dump('2.dot', G, ExtNodes, 1);
