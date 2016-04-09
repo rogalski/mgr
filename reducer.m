@@ -14,6 +14,8 @@ connected_components = components(A);
 
 unique_connected_components = unique(connected_components);
 
+fillin_tracker = cell(length(unique_connected_components), 1);
+
 for conn_comp_i = 1:length(unique_connected_components)
     conn_comp_id = unique_connected_components(conn_comp_i);
     conn_comp_sel = (connected_components == conn_comp_id);
@@ -120,6 +122,9 @@ for conn_comp_i = 1:length(unique_connected_components)
     
     % Eliminate nodes one-by-one
     nodewise_camd;
+    
+    % Store analysed fill-in
+    fillin_tracker{conn_comp_i} = local_fillin_tracker;
 
     G(conn_comp_sel, conn_comp_sel) = 0;
     G(global_nodes_left, global_nodes_left) = bestG;

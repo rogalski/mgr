@@ -9,12 +9,15 @@ original_cost = nnz(triu(conn_comp_G, 1));
 threshold_cost = original_cost;
 
 min_fillin_nodes_eliminated_count = 0;
+
+local_fillin_tracker = zeros(1, nodes_to_eliminate);
 for nodes_eliminated=1:nodes_to_eliminate
     G11 = Gi(1, 1);
     G12 = Gi(1, 2:end);
     G22 = Gi(2:end, 2:end);
     Gi = G22 + G12' * (-G11\G12);
     cost = nnz(triu(Gi, 1));
+    local_fillin_tracker(nodes_eliminated) = cost;
     if cost <= threshold_cost
         threshold_cost = cost;
         min_fillin_nodes_eliminated_count = nodes_eliminated;
