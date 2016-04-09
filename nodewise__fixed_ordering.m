@@ -11,6 +11,8 @@ threshold_cost = original_cost;
 min_fillin_nodes_eliminated_count = 0;
 
 local_fillin_tracker = zeros(1, nodes_to_eliminate);
+local_ordering_tracker = Perm(1:nodes_to_eliminate);
+
 for nodes_eliminated=1:nodes_to_eliminate
     G11 = Gi(1, 1);
     G12 = Gi(1, 2:end);

@@ -1,9 +1,14 @@
 function dump(filename, G, ExtNodes, run_neato)
 handle = fopen(filename, 'W');
 fprintf(handle,'graph circuit {\n');
+fprintf(handle,'node [shape=circle];\n');
+fprintf(handle,'{ node [shape=doublecircle] ');
+
 for k=ExtNodes
-    fprintf(handle,'%i [shape=box]\n', k);
+    fprintf(handle,'%i ', k);
 end
+fprintf(handle, '}\n');
+
 dotfiles.dump_conductance_matrix(G, handle);
 fprintf(handle,'}\n');
 fclose(handle);

@@ -13,10 +13,13 @@ assert(length(IsExtNode) == size(G, 1));
 connected_components = components(A);
 
 unique_connected_components = unique(connected_components);
+connected_components_count = length(unique_connected_components);
 
-fillin_tracker = cell(length(unique_connected_components), 1);
+fillin_tracker = cell(connected_components_count, 1);
+reduction_ordering_tracker = cell(connected_components_count, 1);
+processing_time_tracker = zeros(1, connected_components_count);
 
-for conn_comp_i = 1:length(unique_connected_components)
+for conn_comp_i = 1:connected_components_count
     conn_comp_id = unique_connected_components(conn_comp_i);
     conn_comp_sel = (connected_components == conn_comp_id);
     
@@ -121,10 +124,14 @@ for conn_comp_i = 1:length(unique_connected_components)
     end
     
     % Eliminate nodes one-by-one
+    timer = tic;
     nodewise_camd;
+    conn_comp_reduction_time = toc(timer); 
     
     % Store analysed fill-in
     fillin_tracker{conn_comp_i} = local_fillin_tracker;
+    reduction_ordering_tracker{conn_comp_i} = local_ordering_tracker;
+    processing_time_tracker(conn_comp_i) = conn_comp_reduction_time;
 
     G(conn_comp_sel, conn_comp_sel) = 0;
     G(global_nodes_left, global_nodes_left) = bestG;
