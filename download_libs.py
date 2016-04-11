@@ -24,15 +24,6 @@ def extract_matlab_bgl(matlab_bgl_zip):
     os.unlink(matlab_bgl_zip)
 
 
-def download_metis():
-    url = "http://glaros.dtc.umn.edu/gkhome/fetch/sw/metis/metis-5.1.0.tar.gz"
-    return _download_to_file(url)
-
-
-def extract_metis(metis_tar_gz):
-    _extract_tar_gz(metis_tar_gz)
-
-
 def download_suitesparse():
     url = "http://faculty.cse.tamu.edu/davis/SuiteSparse/SuiteSparse-4.5.2.tar.gz"
     return _download_to_file(url)
@@ -64,7 +55,6 @@ def _extract_tar_gz(file_path):
 def main():
     ensure_dst_dir()
     extract_matlab_bgl(download_matlab_bgl())
-    extract_metis(download_metis())
     extract_suitesparse(download_suitesparse())
 
 
