@@ -34,7 +34,7 @@ def extract_metis(metis_tar_gz):
 
 
 def download_suitesparse():
-    url = "http://faculty.cse.tamu.edu/davis/SuiteSparse/SuiteSparse-4.4.6.tar.gz"
+    url = "http://faculty.cse.tamu.edu/davis/SuiteSparse/SuiteSparse-4.5.2.tar.gz"
     return _download_to_file(url)
 
 
