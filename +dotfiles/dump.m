@@ -1,8 +1,8 @@
 function dump(filename, G, ExtNodes, run_neato)
 handle = fopen(filename, 'W');
-fprintf(handle,'graph circuit {\n');
+fprintf(handle,'graph circuit {\n overlap=false \n');
 fprintf(handle,'node [shape=circle];\n');
-fprintf(handle,'{ node [shape=doublecircle] ');
+fprintf(handle,'{ node [shape=rect] ');
 
 for k=ExtNodes
     fprintf(handle,'%i ', k);
