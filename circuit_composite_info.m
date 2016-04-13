@@ -6,7 +6,7 @@ for k = 1:num_circuits
     G = varargin{2*k-1};
     is_ext_node = varargin{2*k};
     infos{k} = circuit_info(G, is_ext_node);
-    if infos{k}.num_conn_components ~= 1
+    if infos{k}.num_conn_components > 1
        warning('Pair %d has more than one connected component', k) 
     end
 end
