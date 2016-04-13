@@ -17,13 +17,12 @@ for nodes_eliminated=1:nodes_to_eliminate
     Gi = G22 + G12' * (-G11\G12);
     cost = nnz(triu(Gi, 1));
     local_fillin_tracker(nodes_eliminated) = cost;
-    cost_diff = cost - threshold_cost;
-    if cost_diff < 0
+    if cost < threshold_cost
         threshold_cost = cost;
         min_fillin_nodes_eliminated_count = nodes_eliminated;
         bestG = Gi;
     end
-    if 0 && cost_diff > 1.5 * original_cost
+    if cost > 2*original_cost
         early_exit = 1;
         break
     end
@@ -42,7 +41,7 @@ end
 local_nodes_left = Perm(min_fillin_nodes_eliminated_count+1:end);
 local_nodes_eliminated = Perm(1:min_fillin_nodes_eliminated_count);
 
-reduced_data.new_G = bestG;
+reduced_data.G = bestG;
 reduced_data.new_nodes = local_nodes_left;
 reduced_data.is_ext_new_node = is_ext_node(local_nodes_left);
 reduced_data.eliminated_nodes = local_nodes_eliminated;
