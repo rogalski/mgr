@@ -5,7 +5,8 @@ assert(size(G,1) == length(is_ext_node))
 non_empty_nodes = any(G,2);
 empty_nodes = ~any(G,2);
 
-s = sum(is_ext_node(empty_nodes));
+s = sum(is_ext_node(empty_nodes));  % account for not connected ext nodes
+
 info = struct;
 info.num_nodes = length(G(non_empty_nodes, non_empty_nodes)) + s;
 info.num_external = length(find(is_ext_node == 1));
