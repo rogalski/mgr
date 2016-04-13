@@ -1,13 +1,17 @@
 %#ok<*NOPTS>
 clear all
 close all
-CIRCUIT_NAME = 'r_network_int46k_ext8k_res67k_public'
-load_rommes
-previous_circuit_info = circuit_info(G, IsExtNode)
-% netlists.dump('1.cir', G, ExtNodes);
-% dotfiles.dump('1.dot', G, ExtNodes, 1);
+[G, is_ext_node] = load_mrewiens('lr_fake_disconnected');
+
+previous_circuit_info = circuit_info(G, is_ext_node)
+dotfiles.dump('1.dot', G, is_ext_node);
+run_neato('1.dot');
 tic
-reducer;
+output = reducer(G, is_ext_node, struct);
 toc
-reduced_circuit_info = circuit_info(G, IsExtNode)
-% dotfiles.dump('2.dot', G, ExtNodes, 1);
+to_info = input_for_circuit_composite_info(output);
+reduced_circuit_info = circuit_composite_info(to_info{:})
+
+to_dump = input_for_dump(output);
+dotfiles.dump_composite('2.dot', to_dump{:});
+run_neato('2.dot');

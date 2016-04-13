@@ -20,7 +20,7 @@ n_circuits = length(varargin) / 3;
 for k=1:n_circuits
     [G, is_ext_node, node_ids] = varargin{3*k-2:3*k};
     dotfiles.dump_terminals(handle, is_ext_node, node_ids);
-    dotfiles.dump_conductance_matrix(handle, G, node_ids, r_count);
+    dotfiles.dump_conductance_matrix(handle, G, node_ids);
 end
 
 fprintf(handle,'}\n');
