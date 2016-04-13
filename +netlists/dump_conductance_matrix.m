@@ -1,5 +1,5 @@
-function dump_conductance_matrix( G, handle )
-r_count = uint32(0);
+function r_count = dump_conductance_matrix( handle, G, node_ids, r_count )
+
 % s = size(G);
 sums = sum(G, 2);
 [i,j,v] = find(tril(G));
@@ -21,6 +21,6 @@ for k = 1:length(v)
         continue
     end
     r_count = r_count + 1;
-    fprintf(handle,'R%i %i %i %s\n', r_count, m, n, num2str(ri));
+    fprintf(handle,'R%i %i %i %s\n', r_count, node_ids(m), node_ids(n), num2str(ri));
 end
 end

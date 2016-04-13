@@ -1,32 +1,28 @@
-function dump(filename, G, ExtNodes, run_neato)
+function dump(filename, G, is_ext_node, node_ids)
+% DUMP  Dumps conductance matrix as Graphviz *.dot file.
+% 
+% Input:
+%   filename - name of file where dump should be made
+%   G - conductance matrix of dumped circuit
+%   is_ext_node - boolean vector denoting external nodes in G
+%   node_ids - optional vector of ids used to rename nodes accordingly
+%
+
+if (~exist('node_ids', 'var'))
+    node_ids = 1:length(G);
+end
+
 handle = fopen(filename, 'W');
-fprintf(handle,'graph circuit {\n overlap=false \n');
+fprintf(handle,'graph circuit {\noverlap=false\n');
 fprintf(handle,'node [shape=circle];\n');
 fprintf(handle,'{ node [shape=rect] ');
 
-for k=ExtNodes
-    fprintf(handle,'%i ', k);
+for k=find(is_ext_node)
+    fprintf(handle,'%i ', node_ids(k));
 end
 fprintf(handle, '}\n');
 
-dotfiles.dump_conductance_matrix(G, handle);
+dotfiles.dump_conductance_matrix(handle, G, node_ids);
 fprintf(handle,'}\n');
 fclose(handle);
-
-if ~exist('run_neato','var') 
-    run_neato = 0;
-end
-
-% run neato if requested
-if (run_neato)
-    [pathstr,name,~] = fileparts(filename);
-    output_file = fullfile(pathstr,[name '.png']);
-    cmdline = strjoin({'/usr/local/bin/neato', filename, '-Tpng', ['-o' output_file]}, ' ');
-    retcode = system(cmdline);
-    if retcode ~= 0
-        error('neato:call',...,
-            '%s retcode: %d',...,
-            cmdline, retcode)
-    end
-end
 end

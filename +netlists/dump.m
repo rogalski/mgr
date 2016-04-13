@@ -1,9 +1,20 @@
-function dump(filename, G, ExtNodes)
+function dump(filename, G, ~, node_ids)
+% DUMP  Dumps conductance matrix as Spice *.cir file.
+% 
+% Input:
+%   filename - name of file where dump should be made
+%   G - conductance matrix of dumped circuit
+%   is_ext_node - boolean vector denoting external nodes in G
+%   node_ids - optional vector of ids used to rename nodes accordingly
+%
+
+
+if (~exist('node_ids', 'var'))
+    node_ids = 1:length(G);
+end
+
 handle = fopen(filename, 'W');
 fprintf(handle,'%% Netlist dump from %s\n', datestr(datetime));
-netlists.dump_conductance_matrix(G, handle);
-fprintf(handle,'V1 %d 0 0\n', ExtNodes(1));
-fprintf(handle,'V2 %d 0 1\n', ExtNodes(2));
-fprintf(handle,'.OP\n');
+netlists.dump_conductance_matrix(handle, G, node_ids, uint32(0));
 fclose(handle);
 end

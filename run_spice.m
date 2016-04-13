@@ -1,4 +1,4 @@
-function [log_file] = spice(input_file)
+function [log_file] = run_spice(input_file)
 spice_path = '/Applications/LTspice.app/Contents/MacOS/LTspice';
 cmdline = strjoin({spice_path, '-b', input_file}, ' ');
 retcode = system(cmdline);

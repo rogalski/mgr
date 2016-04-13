@@ -1,4 +1,12 @@
 function [ G ] = load( file )
+% loads  Loads spice file as G conductance matrix.
+% 
+% Input:
+%   file: source filename
+% Output:
+%   G: conductance matrix
+%
+
 resistor_values = [];
 resistor_nodes = [];
 resistors_count = uint32(0);
