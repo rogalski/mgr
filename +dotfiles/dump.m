@@ -13,15 +13,8 @@ if (~exist('node_ids', 'var'))
 end
 
 handle = fopen(filename, 'W');
-fprintf(handle,'graph circuit {\noverlap=false\n');
-fprintf(handle,'node [shape=circle];\n');
-fprintf(handle,'{ node [shape=rect] ');
-
-for k=find(is_ext_node)
-    fprintf(handle,'%i ', node_ids(k));
-end
-fprintf(handle, '}\n');
-
+dotfiles.dump_header(handle);
+dotfiles.dump_terminals(handle, is_ext_node, node_ids);
 dotfiles.dump_conductance_matrix(handle, G, node_ids);
 fprintf(handle,'}\n');
 fclose(handle);
