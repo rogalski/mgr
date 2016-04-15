@@ -10,6 +10,10 @@ assert(length(is_ext_node) == size(G, 1));
 A = adj(G);
 out = struct;
 
+if ~isfield(options, 'reorder_strategy')
+    options.reorder_strategy = 'camd';
+end
+
 % 1. Compute connected components Gi of G
 connected_components = components(A);
 
