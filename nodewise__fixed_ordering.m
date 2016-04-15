@@ -43,7 +43,7 @@ local_nodes_eliminated = Perm(1:min_fillin_nodes_eliminated_count);
 
 reduced_data.G = bestG;
 reduced_data.new_nodes = local_nodes_left;
-reduced_data.is_ext_new_node = is_ext_node(local_nodes_left);
+reduced_data.is_ext_node = is_ext_node(local_nodes_left);
 reduced_data.eliminated_nodes = local_nodes_eliminated;
 reduced_data.early_exit = early_exit;
 reduced_data.fillin_tracker = local_fillin_tracker;

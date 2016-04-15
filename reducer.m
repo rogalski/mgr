@@ -33,7 +33,7 @@ for conn_comp_i = 1:connected_components_count
     
     % Eliminate nodes ne-by-one
     timer = tic;
-    d = nodewise_camd( after_graph.G, after_graph.is_ext_new_node, struct );
+    d = nodewise_camd( after_graph.G, after_graph.is_ext_node, struct );
     out.nodewise_processing_times{conn_comp_i} = toc(timer); 
 
     d.new_nodes = global_context(after_graph.new_nodes(d.new_nodes));

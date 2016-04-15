@@ -7,7 +7,7 @@ out = struct;
 out.G = [];
 out.removed_nodes = [];
 out.new_nodes = [];
-out.is_ext_new_node = [];
+out.is_ext_node = [];
 
 removed_nodes = zeros(1, length(G));
 
@@ -106,5 +106,5 @@ end
 out.G = G(~removed_nodes, ~removed_nodes);
 out.removed_nodes = find(removed_nodes);
 out.new_nodes = find(~removed_nodes);
-out.is_ext_new_node = is_ext_node(out.new_nodes);
+out.is_ext_node = is_ext_node(out.new_nodes);
 end
