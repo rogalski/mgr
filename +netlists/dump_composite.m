@@ -16,9 +16,7 @@ fprintf(handle,'%% Netlist dump from %s\n', datestr(datetime));
 n_circuits = length(varargin) / 3;
 r_count = uint32(0);
 for k=1:n_circuits
-    G = varargin{3*k-2};
-    % is_ext_node = varargin{3*k-1};
-    node_ids = varargin{3*k};
+    [G, ~, node_ids] = varargin{3*k-2:3*k};
     fprintf(handle,'%% Connected component %d\n', k);
     r_count = netlists.dump_conductance_matrix(handle, G, node_ids, r_count);
 end

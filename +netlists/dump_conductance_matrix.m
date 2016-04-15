@@ -2,7 +2,7 @@ function r_count = dump_conductance_matrix( handle, G, node_ids, r_count )
 
 % s = size(G);
 sums = sum(G, 2);
-[i,j,v] = find(tril(G));
+[i,j,v] = find(triu(G));
 
 for k = 1:length(v)
     m = i(k);
