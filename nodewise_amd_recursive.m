@@ -6,7 +6,7 @@ function reduced_data = nodewise_amd_recursive( G, is_ext_node, ~ )
 
 perm = amd(G);
 Gi = G(perm, perm);
-
+bestG = Gi;
 original_cost = nnz(triu(G, 1));
 threshold_cost = original_cost;
 
@@ -15,13 +15,14 @@ local_fillin_tracker = zeros(1, nodes_to_eliminate);
 
 ext_nodes_moved = 0;
 early_exit = 0;
+min_fillin_nodes_eliminated_count = 0;
 for n=1:nodes_to_eliminate
     while is_ext_node(perm(n))
         to_change_range = n:(length(perm)-ext_nodes_moved);
         perm_to_change = perm(to_change_range);
         sel_G_to_amd = 2:(length(Gi)-ext_nodes_moved);
         G_to_amd = Gi(sel_G_to_amd, sel_G_to_amd);
-        local_perm = [(amd(G_to_amd, G_to_amd)+1) 1];
+        local_perm = [(amd(G_to_amd)+1) 1];
         perm(to_change_range) = perm_to_change(local_perm);
         if ext_nodes_moved > 0
             Gi = Gi([local_perm (end-ext_nodes_moved+1):end], [local_perm (end-ext_nodes_moved+1):end]);
