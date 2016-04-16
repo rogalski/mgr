@@ -1,6 +1,6 @@
 Gi = G(Perm, Perm);
 bestG = Gi;
-nodes_to_eliminate = length(G) - length(find(is_ext_node));
+nodes_to_eliminate = length(G) - nnz(is_ext_node);
 original_cost = nnz(triu(G, 1));
 threshold_cost = original_cost;
 
