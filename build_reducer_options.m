@@ -15,6 +15,8 @@ if ~isfield(options, 'nodewise_algorithm')
 end
 switch options.nodewise_algorithm
     case 'none'
+        options.nodewise_algorithm = @nodewise_empty;
+    case 'dummy'
         options.nodewise_algorithm = @nodewise_dummy;
     case 'nesdis'
         options.nodewise_algorithm = @nodewise_nesdis_dummy;
