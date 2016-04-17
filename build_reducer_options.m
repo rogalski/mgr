@@ -24,6 +24,8 @@ switch options.nodewise_algorithm
         options.nodewise_algorithm = @nodewise_dummy;
     case 'nesdis'
         options.nodewise_algorithm = @nodewise_nesdis_dummy;
+    case 'nesdis_recursive'
+        options.nodewise_algorithm = @nodewise_nesdis_recursive;
     case 'metis'
         options.nodewise_algorithm = @nodewise_metis_dummy;
     case 'amd_dummy'

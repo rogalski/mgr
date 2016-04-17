@@ -1,10 +1,11 @@
-% NODEWISE_AMD_RECURSIVE Nodewise elimination procedure: recursive AMD as
-% defined in Rommes and Schilders publication.
+% NODEWISE_NESDIS_RECURSIVE Nodewise elimination procedure: recursive
+% nesdis. Inspiried by Rommes and Schilders strategy for AMD, but used for
+% nested dissection.
 %
 % See also NODEWISE_ABSTRACT.
-function reduced_data = nodewise_amd_recursive( G, is_ext_node, ~ )
+function reduced_data = nodewise_nesdis_recursive( G, is_ext_node, ~ )
 
-reorder_function = @amd;
+reorder_function = @nesdis;
 reduced_data = struct;
 
 nodewise__recursive;
