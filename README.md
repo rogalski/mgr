@@ -7,3 +7,7 @@
 - [`reducer.m`](reducer.m) defines reduction framework. It separates G to atomic parts and performs reduction on each part (each connected component).
 - `graph_reduce_*.m` files defines graph algorithms reduction. Interface is defined in `graph_reduce_abstract.m`.
 - `nodewise_*.m` files defines nodewise reduction algorithms. Interface is defined in `nodewise_abstract.m`.
+
+## About MATLAB version
+
+MATLAB 2015b+ is recommended to take advantage of [http://www.mathworks.com/products/matlab/matlab-execution-engine/](JIT-Compiler implemented in MATLAB Engine).
