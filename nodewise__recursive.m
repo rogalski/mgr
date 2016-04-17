@@ -1,5 +1,6 @@
 perm = reorder_function(G);
 Gi = G(perm, perm);
+bestG = Gi;
 original_cost = nnz(triu(G, 1));
 threshold_cost = original_cost;
 
