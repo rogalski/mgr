@@ -1,4 +1,6 @@
 function [ info ] = circuit_info( G, is_ext_node )
+%CIRCUIT_INFO Computes stats for circuit descibed by G and is_ext_node.
+
 assert(size(G,1) == size(G,2))
 assert(size(G,1) == length(is_ext_node))
 

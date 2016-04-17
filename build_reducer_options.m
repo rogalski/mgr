@@ -1,4 +1,8 @@
 function options = build_reducer_options(options)
+%BUILD_REDUCER_OPTIONS Fills options structure with default data if some
+%options are missing.
+%
+% See also REDUCER.
 
 if ~isfield(options, 'graph_algorithm')
     options.graph_algorithm = '';

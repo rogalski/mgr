@@ -1,4 +1,6 @@
 function [ info ] = circuit_composite_info( varargin )
+%CIRCUIT_COMPOSITE_INFO Computes stats for composite circuit (circuit
+%partitioned to connected components);
 
 num_circuits = nargin / 2;
 infos = cell(num_circuits, 1);
