@@ -22,9 +22,9 @@ for k=1:size(terminal_pairs_to_check, 1)
     Rref = fast_path_resistance(L, P==t1, P==t2);
     Rred = fast_path_resistance(Lr, Pr==find(new_nodes==t1), Pr==find(new_nodes==t2));
 
-    diff = 100*(1-Rred/Rref);
-    if (abs(diff) > 1e-10)
+    difference = 100*(1-Rred/Rref);
+    if (abs(difference) > 1e-10)
        is_correct = 0; 
     end
-    fprintf('T1: %4d; T2: %4d; Rref: %2.5f; Rred: %2.5f, diff: %4f%%\n', t1, t2, Rref, Rred, diff)
+    fprintf('T1: %4d; T2: %4d; Rref: %2.5f; Rred: %2.5f, diff: %4f%%\n', t1, t2, Rref, Rred, difference)
 end
