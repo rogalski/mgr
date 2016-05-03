@@ -12,13 +12,16 @@ function dump_composite(filename, varargin)
 %
 
 handle = fopen(filename, 'W');
-fprintf(handle,'%% Netlist dump from %s\n', datestr(datetime));
+netlists.dump_header(handle);
 n_circuits = length(varargin) / 3;
 r_count = uint32(0);
+v_count = uint32(0);
 for k=1:n_circuits
-    [G, ~, node_ids] = varargin{3*k-2:3*k};
-    fprintf(handle,'%% Connected component %d\n', k);
+    [G, is_ext_node, node_ids] = varargin{3*k-2:3*k};
+    fprintf(handle,'* Connected component %d\n', k);
     r_count = netlists.dump_conductance_matrix(handle, G, node_ids, r_count);
+    v_count = netlists.dump_voltage_sources(handle, is_ext_node, node_ids, v_count);
 end
+netlists.dump_footer(handle);
 fclose(handle);
 end
