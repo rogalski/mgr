@@ -17,7 +17,7 @@ line = fgetl(handle);  % Skip first (comment line)
 % Load resistors
 while ischar(line)
     switch line(1)
-        case '%'
+        case '*'
            % do nothing with comment
         case 'R'
             fields = strsplit(line, ' ');
