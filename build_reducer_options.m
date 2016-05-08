@@ -4,6 +4,10 @@ function options = build_reducer_options(options)
 %
 % See also REDUCER.
 
+if ~isfield(options, 'verbose')
+    options.verbose = 0;
+end
+
 if ~isfield(options, 'graph_algorithm')
     options.graph_algorithm = '';
 end

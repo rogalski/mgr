@@ -28,7 +28,9 @@ out.c = cell(connected_components_count, 1);
 for conn_comp_i = 1:connected_components_count
     conn_comp_id = unique_connected_components(conn_comp_i);
     conn_comp_sel = (connected_components == conn_comp_id);
-    
+    if options.verbose
+       fprintf('Component %d/%d (%d nodes)\n', conn_comp_i, connected_components_count, nnz(conn_comp_sel));
+    end
     conn_comp_A = A(conn_comp_sel, conn_comp_sel);
     conn_comp_G = G(conn_comp_sel, conn_comp_sel);
     conn_comp_is_ext_node = is_ext_node(conn_comp_sel);
@@ -40,7 +42,7 @@ for conn_comp_i = 1:connected_components_count
     
     % Eliminate nodes ne-by-one
     nodewise_timer = tic;
-    d = options.nodewise_algorithm(after_graph.G, after_graph.is_ext_node, struct);
+    d = options.nodewise_algorithm(after_graph.G, after_graph.is_ext_node, options);
     nodewise_processing_time = toc(nodewise_timer); 
 
     d.new_nodes = global_context(after_graph.new_nodes(d.new_nodes));
