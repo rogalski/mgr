@@ -8,6 +8,14 @@ if ~isfield(options, 'verbose')
     options.verbose = 0;
 end
 
+if ~isfield(options, 'auto_save')
+    options.auto_save = 0;
+end
+
+if options.auto_save && ~isfield(options, 'output_file')
+    options.output_file = ['reducer_' datestr(datetime, 30) '.mat'];
+end
+
 if ~isfield(options, 'graph_algorithm')
     options.graph_algorithm = '';
 end
