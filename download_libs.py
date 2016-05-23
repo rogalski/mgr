@@ -25,7 +25,7 @@ def extract_matlab_bgl(matlab_bgl_zip):
 
 
 def download_suitesparse():
-    url = "http://faculty.cse.tamu.edu/davis/SuiteSparse/SuiteSparse-4.5.2.tar.gz"
+    url = "http://faculty.cse.tamu.edu/davis/SuiteSparse/SuiteSparse-4.5.3.tar.gz"
     return _download_to_file(url)
 
 
