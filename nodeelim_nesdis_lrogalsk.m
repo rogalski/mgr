@@ -22,6 +22,9 @@ function reduced_data = nodeelim_nesdis_lrogalsk( G, is_ext_node, options )
     
     % reduce each leaf
     for n=1:length(leaves)
+        if options.verbose
+            fprintf('Reduce leaf; %i/%i\n', n, length(leaves))
+        end
         leaf_id = leaves(n);
         leaf_nodes = (cmember == leaf_id);
         
