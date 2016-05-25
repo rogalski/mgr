@@ -6,7 +6,8 @@ import matlab.unittest.plugins.CodeCoveragePlugin
 s1 = TestSuite.fromFile('test_circuit_info.m');
 s2 = TestSuite.fromFile('test_graph_reduce.m');
 s3 = TestSuite.fromClass(?test_netlists);
-suite = [s1, s2, s3];
+s4 = TestSuite.fromFile('test_nesdis_custom_algorithm.m');
+suite = [s1, s2, s3, s4];
 
 runner = TestRunner.withTextOutput;
 runner.addPlugin(CodeCoveragePlugin.forFolder(pwd))

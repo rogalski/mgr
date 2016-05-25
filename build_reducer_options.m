@@ -34,16 +34,14 @@ switch options.nodewise_algorithm
         options.nodewise_algorithm = @nodewise_empty;
     case 'dummy'
         options.nodewise_algorithm = @nodewise_dummy;
-    case 'nesdis'
-        options.nodewise_algorithm = @nodewise_nesdis_dummy;
-    case 'nesdis_recursive'
-        options.nodewise_algorithm = @nodewise_nesdis_recursive;
-    case 'metis'
-        options.nodewise_algorithm = @nodewise_metis_dummy;
     case 'amd_dummy'
         options.nodewise_algorithm = @nodewise_amd_dummy;
     case 'amd_recursive'
         options.nodewise_algorithm = @nodewise_amd_recursive;
+    case 'camd'
+        options.nodewise_algorithm = @nodewise_camd;
+    case 'nesdis_lrogalsk'
+        options.nodewise_algorithm = @nodeelim_nesdis_lrogalsk;
     otherwise
         options.nodewise_algorithm = @nodewise_camd;
 end

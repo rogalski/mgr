@@ -1,19 +1,28 @@
-function is_correct = check_reduction_correctness( G, is_ext_node, reduction_output )
+function is_correct = check_reduction_correctness( G, is_ext_node, Gred, new_nodes )
 % Checks for reduction correctness when reduced circuit has single
 % connected component.
 old_ext_nodes = find(is_ext_node);
-terminal_pairs_to_check = nchoosek(old_ext_nodes, 2);
+if length(old_ext_nodes) > 100
+    warning('Check randomly selected subset of terminals ONLY.')
+    terminals_selection = randsample(old_ext_nodes, 100);
+    terminal_pairs_to_check = nchoosek(terminals_selection, 2);
+else
+   terminal_pairs_to_check = nchoosek(old_ext_nodes, 2); 
+end
 
+disp prepare1
 % Prepare old circuit for pathres computations
 P = amd(G);
 L = chol(G(P, P), 'lower');
 
+disp prepare2
 % Prepare new circuit for pathres computations
-new_nodes = reduction_output.c{1}.new_nodes;
-Gr= reduction_output.c{1}.G;
+% new_nodes = new_nodes;
+Gr= Gred;
 Pr = amd(Gr);
 Lr = chol(Gr(Pr, Pr), 'lower');
 
+disp check
 is_correct = 1;
 for k=1:size(terminal_pairs_to_check, 1)
     t1 = terminal_pairs_to_check(k, 1);
