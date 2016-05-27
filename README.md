@@ -10,4 +10,4 @@
 
 ## About MATLAB version
 
-MATLAB 2015b+ is recommended to take advantage of [http://www.mathworks.com/products/matlab/matlab-execution-engine/](JIT-Compiler implemented in MATLAB Engine).
+MATLAB 2015b+ is recommended to take advantage of [JIT-Compiler implemented in MATLAB Engine](http://www.mathworks.com/products/matlab/matlab-execution-engine/).
