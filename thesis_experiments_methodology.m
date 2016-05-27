@@ -1,9 +1,10 @@
 [G, is_ext_node] = load_rommes('r_network_int46k_ext8k_res67k_public');
 c = components(adj(G));
-Gn = G(c==6, c==6);
-is_ext_noden = is_ext_node(c==6);
+ci = 1400;
+Gn = G(c==ci, c==ci);
+is_ext_noden = is_ext_node(c==ci);
 
-N = 500;  % number of connected components to create in first step
+N = 20;  % number of connected components to create in first step
 n = length(Gn);
 
 % Create huge matrix of N connected components
@@ -29,13 +30,18 @@ options.verbose = 0;
 options.auto_save = 0;
 
 tic
-output = reducer(G1, is_ext_node1, options)
+output1 = reducer(G1, is_ext_node1, options);
 toc
 
 tic
-output = reducer(G2, is_ext_node1, options)
+output2 = reducer(G2, is_ext_node1, options);
 toc
 
-circuit_info(G1, is_ext_node1)
-circuit_info(G2, is_ext_node1)
+info1_pre = circuit_info(G1, is_ext_node1)
+info2_pre = circuit_info(G2, is_ext_node1)
 
+i1 = input_for_circuit_composite_info(output1);
+i2 = input_for_circuit_composite_info(output2);
+
+info1post = circuit_composite_info(i1{:})
+info2_post = circuit_composite_info(i2{:})
