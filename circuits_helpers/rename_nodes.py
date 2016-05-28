@@ -1,3 +1,7 @@
+# Reads circuit in mrewiens format.
+# Outputs equivalent circuit with nodes numerated from 1 to N.
+# Pre-processing step for easier processing in MATLAB.
+
 seen = set()
 with open("edges.txt") as f:
     for l in f:
