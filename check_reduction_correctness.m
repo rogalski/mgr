@@ -18,7 +18,7 @@ L = chol(G(P, P), 'lower');
 disp prepare2
 % Prepare new circuit for pathres computations
 % new_nodes = new_nodes;
-Gr= Gred;
+Gr = Gred;
 Pr = amd(Gr);
 Lr = chol(Gr(Pr, Pr), 'lower');
 
