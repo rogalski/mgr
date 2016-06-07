@@ -38,3 +38,5 @@ Mondriaan.defaults
 *.png
 *.mat
 *.fig
+*.eps
+

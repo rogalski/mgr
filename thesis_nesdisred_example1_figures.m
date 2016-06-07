@@ -32,7 +32,7 @@ draw_cp_tree(cp, cmember);
 xlabel('');
 set(f, 'Position', [100, 100, 600, 200])
 set(f,'PaperPositionMode','auto')
-print(get_filename('tree'), '-dpng')
+print(get_filename('tree'), '-deps')
 close(f);
 
 % what happens when separator is removed
@@ -67,5 +67,5 @@ draw_cp_tree(cp, cmember);
 xlabel('');
 set(f,'PaperPositionMode','auto')
 set(f, 'Position', [100, 100, 700, 200])
-print(get_filename('tree2'), '-dpng')
+print(get_filename('tree2'), '-deps')
 close(f);
