@@ -14,6 +14,9 @@ if (~exist('node_ids', 'var'))
 end
 
 handle = fopen(filename, 'W');
+if handle == -1
+   error('Failed to open %s for writing', filename) 
+end
 netlists.dump_header(handle);
 netlists.dump_conductance_matrix(handle, G, node_ids, uint32(0));
 netlists.dump_voltage_sources(handle, is_ext_node, node_ids, uint32(0));

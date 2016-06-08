@@ -13,6 +13,9 @@ if (~exist('node_ids', 'var'))
 end
 
 handle = fopen(filename, 'W');
+if handle == -1
+   error('Failed to open %s for writing', filename) 
+end
 dotfiles.dump_header(handle);
 dotfiles.dump_terminals(handle, is_ext_node, node_ids);
 dotfiles.dump_conductance_matrix(handle, G, node_ids);
