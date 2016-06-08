@@ -1,4 +1,4 @@
-% NODEWISE_NESDIS_LROGALSK
+% NODEWISE_NESDIS_DUMMY
 % Custom reduction scheme developed as a part of this master's thesis.
 % Approach is inspired by nested dissection fill-in reduction algorithm,
 % but takes into consideration
@@ -10,7 +10,7 @@
 % parents (all up to root). Keep separators and external nodes.
 %
 % See also NODEWISE_ABSTRACT, NESDIS.
-function reduced_data = nodeelim_nesdis_lrogalsk( G, is_ext_node, options )
+function reduced_data = nodeelim_nesdis_dummy( G, is_ext_node, options )
     if ~isfield(options, 'nesdis_opts')
         options.nesdis_opts = [];
     end
