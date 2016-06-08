@@ -9,7 +9,11 @@ function out = reducer( G, is_ext_node, options )
 %   out.c - cells of reduction results for each connected component
 assert(length(is_ext_node) == size(G, 1));
 
-options = build_reducer_options(options)
+options = build_reducer_options(options);
+if options.verbose
+    options  %#ok<NOPRT>
+end
+
 try
     load(options.output_file, 'out')
 catch
