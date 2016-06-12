@@ -47,4 +47,9 @@ switch options.nodewise_algorithm
     otherwise
         options.nodewise_algorithm = @nodewise_camd;
 end
+
+if ~isfield(options, 'cost_function')
+    options.cost_function = @count_resistors;
+end
+
 end
