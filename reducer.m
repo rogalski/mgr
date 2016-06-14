@@ -51,6 +51,16 @@ for conn_comp_i = 1:length(components_to_process)
     conn_comp_is_ext_node = is_ext_node(conn_comp_sel);
     global_context = find(conn_comp_sel);
 
+    if ~any(conn_comp_is_ext_node)
+        d.G = sparse(0, 0);
+        d.is_ext_node = [];
+        d.new_nodes = [];
+        d.graph_processing_time = 0;
+        d.nodewise_processing_time = 0;
+        out.c{conn_comp_id} = d;
+        continue
+    end
+    
     graph_timer = tic;
     after_graph = options.graph_algorithm(conn_comp_G,conn_comp_is_ext_node, conn_comp_A);
     graph_processing_time = toc(graph_timer);
