@@ -19,7 +19,7 @@ for k = 1:length(v)
         ri = -1/el;
         n2 = node_ids(n);
     end
-    if ri < 0 || ri >= 1e12
+    if ri < 0 || ri >= 1e10
         continue
     end
     r_count = r_count + 1;
