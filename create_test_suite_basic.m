@@ -6,9 +6,9 @@ mkdir(dst_dir)
 
 % mrewiens
 create_test_suite_for_circuit(@load_mrewiens, 'o1', ...
-                              [1, 3, 6], dst_dir);
+                              [], dst_dir);
 % rommes
-c = [1343 1399 93 90 1400 1403 96 86 1402 92 161 1344 85];
+c = [1343 1399 93 90 1400 1403 96 86 1402 92 161 85];
 create_test_suite_for_circuit(@load_rommes, 'r_network_int46k_ext8k_res67k_public',...
                               c, dst_dir);
 create_test_suite_for_circuit(@load_rommes, 'r_network_int48k_ext8k_res75k_public',...
