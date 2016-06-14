@@ -52,4 +52,8 @@ if ~isfield(options, 'cost_function')
     options.cost_function = @count_resistors;
 end
 
+if ~isfield(options, 'early_exit')
+    options.early_exit = 0;
+end
+
 end

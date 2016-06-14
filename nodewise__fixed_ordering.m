@@ -27,8 +27,8 @@ for nodes_eliminated=1:nodes_to_eliminate
         min_fillin_nodes_eliminated_count = nodes_eliminated;
         bestG = Gi;
     end
-    if 0 && length(Gi) > 2000 && (nnz(Gi) / length(Gi) > 20)
-        fprintf('Early exit from nodwise')
+    if options.early_exit && cost > 3 * original_cost && length(Gi) > 2000
+        fprintf('Early exit from nodwise.')
         early_exit = 1;
         break
     end

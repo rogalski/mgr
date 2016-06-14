@@ -1,7 +1,9 @@
+cost_function = options.cost_function;
+
 perm = reorder_function(G);
 Gi = G(perm, perm);
 bestG = Gi;
-original_cost = nnz(triu(G, 1));
+original_cost = cost_function(G);
 threshold_cost = original_cost;
 
 nodes_to_eliminate = length(G) - nnz(is_ext_node);
@@ -29,17 +31,18 @@ for n=1:nodes_to_eliminate
     G12 = Gi(1, 2:end);
     G22 = Gi(2:end, 2:end);
     Gi = G22 + G12' * (-G11\G12);
-    cost = nnz(triu(Gi, 1));
+    cost = cost_function(Gi);
     local_fillin_tracker(n) = cost;
     if cost < threshold_cost
         threshold_cost = cost;
         min_fillin_nodes_eliminated_count = n;
         bestG = Gi;
     end
-    if cost > 2*original_cost
+    if options.early_exit && cost > 3 * original_cost && length(Gi) > 2000
+        fprintf('Early exit from nodwise.')
         early_exit = 1;
         break
-    end    
+    end
 end
 
 
