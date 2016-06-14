@@ -1,7 +1,9 @@
 Gi = G(Perm, Perm);
 bestG = Gi;
 nodes_to_eliminate = length(G) - nnz(is_ext_node);
-original_cost = nnz(triu(G, 1));
+cost_function = options.cost_function;
+
+original_cost = cost_function(Gi);
 threshold_cost = original_cost;
 
 min_fillin_nodes_eliminated_count = 0;
@@ -11,18 +13,22 @@ local_ordering_tracker = Perm(1:nodes_to_eliminate);
 
 early_exit = 0;
 for nodes_eliminated=1:nodes_to_eliminate
+    if options.verbose && mod(nodes_eliminated, 1000) == 0
+        fprintf('Nodewise elimination; %i/%i\n', nodes_eliminated, nodes_to_eliminate)
+    end
     G11 = Gi(1, 1);
-    G12 = Gi(1, 2:end);
+    G12 = Gi(2:end, 1)';
     G22 = Gi(2:end, 2:end);
     Gi = G22 + G12' * (-G11\G12);
-    cost = nnz(triu(Gi, 1));
+    cost = cost_function(Gi);
     local_fillin_tracker(nodes_eliminated) = cost;
     if cost < threshold_cost
         threshold_cost = cost;
         min_fillin_nodes_eliminated_count = nodes_eliminated;
         bestG = Gi;
     end
-    if cost > 2*original_cost
+    if 0 && length(Gi) > 2000 && (nnz(Gi) / length(Gi) > 20)
+        fprintf('Early exit from nodwise')
         early_exit = 1;
         break
     end
