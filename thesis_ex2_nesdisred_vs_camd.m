@@ -7,9 +7,11 @@ mkdir(RESULTS_DIR);
 
 % Test matrix definition - reduction params
 testMatrix_costFuncs_empty = {[]};
-testMatrix_costFuncs = {@count_resistors, @cost_res2_nodes};
+testMatrix_costFuncs = {@cost_res2_nodes};  % @count_resistors, 
 
-testMatrix_nesDisOpts = {[5 0 1 0], [10 0 1 0], [20 0 1 0], [50 0 1 0], [100 0 1 0], [200 0 1 0]};
+testMatrix_nesDisOpts = {[5 0 1 0], [200 0 1 0]};
+% [10 0 1 0], [20 0 1 0], [50 0 1 0], [100 0 1 0], 
+
 testMatrix_emptyNesDisOpts = {[]};
 
 testMatrix = [
