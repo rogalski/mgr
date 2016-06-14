@@ -1,5 +1,5 @@
 function dump_footer( handle, node_ids )
-fprintf(handle, '.dc V1 0 1 1m\n');
+fprintf(handle, '.dc V1 0 1 10m\n');
 fprintf(handle, '.print dc v(%d)\n', node_ids(1));
 fprintf(handle, '.end\n');
 fprintf(handle, '.control\n');

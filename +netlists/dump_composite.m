@@ -22,6 +22,6 @@ for k=1:n_circuits
     r_count = netlists.dump_conductance_matrix(handle, G, node_ids, r_count);
     v_count = netlists.dump_sources(handle, is_ext_node, node_ids, v_count);
 end
-netlists.dump_footer(handle, node_ids);
+netlists.dump_footer(handle, varargin{3});
 fclose(handle);
 end
