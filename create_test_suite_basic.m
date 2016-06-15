@@ -1,12 +1,14 @@
 dst_dir = fullfile('test_suites', 'basic');
-if exist(dst_dir,'dir')
+
+PURGE = 0;
+if PURGE && exist(dst_dir,'dir')
     rmdir(dst_dir, 's')
 end
 mkdir(dst_dir)
 
 % mrewiens
 create_test_suite_for_circuit(@load_mrewiens, 'o1', ...
-                              [], dst_dir);
+                              [1, 2, 3, 6], dst_dir);
 % rommes
 c = [1343 1399 93 90 1400 1403 96 86 1402 92 161 85];
 create_test_suite_for_circuit(@load_rommes, 'r_network_int46k_ext8k_res67k_public',...
