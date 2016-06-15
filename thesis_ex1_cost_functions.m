@@ -55,14 +55,14 @@ end
 
 group_count = length(testMatrix_costFunctions);
 
-time_solve_orig = zeros(tc_count, group_count);
-time_solve_red = zeros(tc_count, group_count);
-num_nodes_orig = zeros(tc_count, 1);
-num_nodes_red = zeros(tc_count, group_count);
-num_term_orig = zeros(tc_count, 1);
-num_term_red = zeros(tc_count, group_count);
-num_res_orig = zeros(tc_count, 1);
-num_res_red = zeros(tc_count, group_count);
+time_solve_orig = nan(tc_count, group_count);
+time_solve_red = nan(tc_count, group_count);
+num_nodes_orig = nan(tc_count, 1);
+num_nodes_red = nan(tc_count, group_count);
+num_term_orig = nan(tc_count, 1);
+num_term_red = nan(tc_count, group_count);
+num_res_orig = nan(tc_count, 1);
+num_res_red = nan(tc_count, group_count);
 
 
 tc_num = 0;
