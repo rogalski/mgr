@@ -5,6 +5,8 @@ tc_count = length(testcases);
 RESULTS_DIR = fullfile('results', 'ex2_nesdisred_camd');
 mkdir(RESULTS_DIR);
 
+REFERENCE_DIR = fullfile('results', 'reference');
+
 % Test matrix definition - reduction params
 testMatrix_costFuncs_empty = {[]};
 testMatrix_costFuncs = {@cost_res2_nodes};  % @count_resistors, 
@@ -69,14 +71,6 @@ for c = testMatrix'
         i = input_for_dump(output);
         netlists.dump_composite(output_filename([results_group '.red.cir']), i{:});
         ngspice.run(output_filename([results_group '.red.cir']));
-
-        % Run reference (if needed)
-        if ~exist(output_filename('.org.cir'), 'file')
-            netlists.dump(output_filename('.org.cir'), G, is_ext_node);
-        end
-        if ~exist(output_filename('.org.log'), 'file')
-        ngspice.run(output_filename('.org.cir'));
-        end
     end
 end
 
@@ -126,7 +120,7 @@ for f = testcases'
         num_res_orig(tc_num, 1) = input_circuit_info.num_resistors;
         num_res_red(tc_num, group_num) = output_circuit_info.num_resistors;
         red_total_time(tc_num, group_num) = output.total_time;
-        time_solve_orig(tc_num, group_num) = ngspice.get_simulation_time(output_filename('.org.log'));
+        time_solve_orig(tc_num, group_num) = ngspice.get_simulation_time(fullfile(REFERENCE_DIR, [tc_name '.log']));
         time_solve_red(tc_num, group_num) = ngspice.get_simulation_time(output_filename([results_group '.red.log']));
     end
 end
