@@ -3,3 +3,5 @@ create_test_suite_basic
 thesis_experiments_references
 thesis_ex1_cost_functions
 thesis_ex2_nesdisred_vs_camd
+thesis_ex3_nesdisred_reduction_time
+thesis_ex4_early_exit_difference
