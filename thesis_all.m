@@ -1,3 +1,4 @@
+close all
 create_test_suite_big
 create_test_suite_basic
 thesis_experiments_references

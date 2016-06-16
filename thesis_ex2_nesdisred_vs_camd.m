@@ -5,6 +5,9 @@ tc_count = length(testcases);
 RESULTS_DIR = fullfile('results', 'ex2_nesdisred_camd');
 mkdir(RESULTS_DIR);
 
+EXPORTS_DIR = fullfile('exports', 'ex2_nesdisred_vs_camd');
+mkdir(EXPORTS_DIR);
+
 REFERENCE_DIR = fullfile('results', 'reference');
 
 % Test matrix definition - reduction params
@@ -130,18 +133,20 @@ cnt_res_vs_res2n = 100 * (time_solve_red(:, 1) ./ time_solve_red(:, 2) - 1);
 T = table(num_nodes_orig,num_term_orig,num_res_orig,...
     num_nodes_red,num_res_red, ...
     'RowNames', arrayfun(@(s) s.name, testcases, 'UniformOutput', false))
+writetable(T, fullfile(EXPORTS_DIR, 'nesdisred_camd_cmp.csv'))
 
 figure;
 bar(time_solve_orig ./ time_solve_red)
 legend('camd', 'ramd', 'nesdisred(5)', 'nesdisred(50) + camd')
-title('Przyspieszenie symulacji')
 ylabel('t_{orig} / t_{red} [s/s]')
 xlabel('Nr obwodu testowego')
+set(gca,'yscale','log')
+print(fullfile(EXPORTS_DIR, 'solve_time.eps'), '-depsc')
 
 figure;
 bar(red_total_time);
 legend('camd', 'ramd', 'nesdisred(5)', 'nesdisred(50) + camd')
-title('Czas trwania procesu redukcji')
-ylabel('Czas redukcji [s]')
+ylabel('Czas trwania procesu redukcji [s]')
 xlabel('Nr obwodu testowego')
-
+set(gca,'yscale','log')
+print(fullfile(EXPORTS_DIR, 'reduction_time.eps'), '-depsc')

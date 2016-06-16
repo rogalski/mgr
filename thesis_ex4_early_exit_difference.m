@@ -7,6 +7,9 @@ mkdir(RESULTS_DIR);
 
 REFERENCE_DIR = fullfile('results', 'reference');
 
+EXPORTS_DIR = fullfile('exports', 'ex4_early_exit');
+mkdir(EXPORTS_DIR);
+
 testMatrix_earlyexit = [0; 1];
 
 for ee = testMatrix_earlyexit'
@@ -90,3 +93,52 @@ T = table(num_nodes_orig,num_term_orig,num_res_orig,...
     num_nodes_red,num_res_red,time_solve_orig, time_solve_red, ...
     red_total_time, no_early_exit_vs_early_exit, ...
     'RowNames', arrayfun(@(s) s.name, testcases, 'UniformOutput', false))
+
+writetable(T, fullfile(EXPORTS_DIR, 'early_exit_results.csv'))
+
+% example of early_exit pessimistic case
+network_name = 'r_network_int48k_ext8k_res75k_public';
+cid = 3;
+
+sample1 = load(fullfile(RESULTS_DIR, [network_name '0.mat']));
+sample2 = load(fullfile(RESULTS_DIR, [network_name '1.mat']));
+
+l1 = sample1.output.c{cid}.fillin_tracker;
+l2 = sample2.output.c{cid}.fillin_tracker;
+best_elim = length(sample1.output.c{cid}.eliminated_nodes);
+early_stop = find(sample2.output.c{cid}.fillin_tracker == 0, 1) - 1;
+
+figure;
+semilogy(1:length(l2), l2, '-b', 1:length(l1), l1, '--b', ...
+         best_elim, l1(best_elim), 'ob', ...
+         early_stop, l2(early_stop), 'xr', ...
+         'MarkerSize', 8, 'MarkerFaceColor','auto');
+legend('Funkcja kosztu symulacji (wczesne wyj¶cie)',...
+    'Funkcja kosztu symulacji (bez wczesnego wyj¶cia)', ...
+    'Minimum funkcji kosztu', ...
+    'Punkt wczesnego zakoñczenia poszukiwañ');
+print(fullfile(EXPORTS_DIR, 'ee_pessimistic.eps'), '-depsc')
+
+% example of early_exit optimistic case
+% example of early_exit optimistic case
+network_name = 'network_c';
+cid = 11;
+
+sample1 = load(fullfile(RESULTS_DIR, [network_name '0.mat']));
+sample2 = load(fullfile(RESULTS_DIR, [network_name '1.mat']));
+
+l1 = sample1.output.c{cid}.fillin_tracker;
+l2 = sample2.output.c{cid}.fillin_tracker;
+best_elim = length(sample1.output.c{cid}.eliminated_nodes);
+early_stop = find(sample2.output.c{cid}.fillin_tracker == 0, 1) - 1;
+
+figure;
+semilogy(1:length(l2), l2, '-b', 1:length(l1), l1, '--b', ...
+         best_elim, l1(best_elim), 'ob', ...
+         early_stop, l2(early_stop), 'xr', ...
+         'MarkerSize', 8, 'MarkerFaceColor','auto');
+legend('Funkcja kosztu symulacji (wczesne wyj¶cie)',...
+    'Funckja kosztu symulacji (bez wczesnego wyj¶cia)', ...
+    'Minimum funkcji kosztu', ...
+    'Punkt wczesnego zakoñczenia poszukiwañ');
+print(fullfile(EXPORTS_DIR, 'ee_optimistic.eps'), '-depsc')

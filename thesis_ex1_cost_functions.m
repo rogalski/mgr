@@ -7,6 +7,9 @@ mkdir(RESULTS_DIR);
 
 REFERENCE_DIR = fullfile('results', 'reference');
 
+EXPORTS_DIR = fullfile('exports', 'ex1_cost_functions');
+mkdir(EXPORTS_DIR);
+
 testMatrix_costFunctions = {
     @count_resistors
     @cost_res2_nodes
@@ -97,3 +100,5 @@ T = table(num_nodes_orig,num_term_orig,num_res_orig,...
     num_nodes_red,num_res_red,time_solve_orig, time_solve_red, ...
     performance_improvement_percentage, cnt_res_vs_res2n, ...
     'RowNames', arrayfun(@(s) s.name, testcases, 'UniformOutput', false))
+
+writetable(T, fullfile(EXPORTS_DIR, 'cost_results.csv'))

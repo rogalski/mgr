@@ -39,4 +39,4 @@ Mondriaan.defaults
 *.mat
 *.fig
 *.eps
-
+*.csv

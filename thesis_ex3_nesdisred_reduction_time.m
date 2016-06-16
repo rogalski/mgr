@@ -5,6 +5,9 @@ tc_count = length(testcases);
 RESULTS_DIR = fullfile('results', 'ex3_nesdisred_reduction_time');
 mkdir(RESULTS_DIR);
 
+EXPORTS_DIR = fullfile('exports', 'ex3_nesdisred_reduction_time');
+mkdir(EXPORTS_DIR);
+
 % Test matrix definition - reduction params
 testMatrix_costFuncs = {@cost_res2_nodes};
 testMatrix_costFuncs_empty = {[]};
@@ -47,7 +50,6 @@ for c = testMatrix'
             continue
         end
         tc_name
-        continue
         load(fname);
         input_circuit_info = circuit_info(G, is_ext_node);
 
@@ -115,3 +117,4 @@ reduction_speedup = 100 * (red_total_time(:, 2) ./ red_total_time(:, 1) - 1);
 T = table(num_nodes_orig,num_term_orig,num_res_orig,...
     num_nodes_red,num_res_red, red_total_time, reduction_speedup, ...
     'RowNames', arrayfun(@(s) s.name, testcases, 'UniformOutput', false))
+writetable(T, fullfile(EXPORTS_DIR, 'nesdisred_speedup.csv'))
