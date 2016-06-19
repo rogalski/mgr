@@ -39,7 +39,9 @@ for n=1:nodes_to_eliminate
         bestG = Gi;
     end
     if options.early_exit && cost > 3 * original_cost && length(Gi) > 2000
-        fprintf('Early exit from nodwise.')
+        if options.verbose
+            fprintf('Early exit from nodwise.')
+        end
         early_exit = 1;
         break
     end
