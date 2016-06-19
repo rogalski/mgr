@@ -1,5 +1,6 @@
 % Experiment 1: search for better cost function in reduction phase
 testcases = dir(fullfile('test_suites', 'big', '*.mat'));
+testcases = testcases(1:end-1);  % skip mrewiens o1
 tc_count = length(testcases);
 
 RESULTS_DIR = fullfile('results', 'ex1_cost_functions');
@@ -12,14 +13,15 @@ mkdir(EXPORTS_DIR);
 
 testMatrix_costFunctions = {
     @count_resistors
+    @cost_res_nodes
     @cost_res2_nodes
-    ... @cost_res_nodes
 };
 
 for func = testMatrix_costFunctions'
     % Build options struct
     options = struct;
     options.verbose = 0;
+    options.early_exit = 1;
     options.nodewise_algorithm = 'camd';
     options.graph_algorithm = 'standard';
     options.cost_function = func{1};
@@ -94,11 +96,25 @@ for f = testcases'
 end
 
 performance_improvement_percentage = 100 * (time_solve_orig ./ time_solve_red - 1);
-cnt_res_vs_res2n = 100 * (time_solve_red(:, 1) ./ time_solve_red(:, 2) - 1);
+cnt_res_vs_resn = 100 * (time_solve_red(:, 1) ./ time_solve_red(:, 2) - 1);
+cnt_res_vs_res2n = 100 * (time_solve_red(:, 1) ./ time_solve_red(:, 3) - 1);
 
 T = table(num_nodes_orig,num_term_orig,num_res_orig,...
     num_nodes_red,num_res_red,time_solve_orig, time_solve_red, ...
-    performance_improvement_percentage, cnt_res_vs_res2n, ...
+    performance_improvement_percentage, cnt_res_vs_resn, cnt_res_vs_res2n, ...
     'RowNames', arrayfun(@(s) s.name, testcases, 'UniformOutput', false))
-
 writetable(T, fullfile(EXPORTS_DIR, 'cost_results.csv'))
+
+
+plot_time_red = time_solve_red';
+plot_time_red = bsxfun(@rdivide, plot_time_red, plot_time_red(1, :));
+plot_perf_improvement = 1 ./ plot_time_red;
+
+bar(plot_perf_improvement')
+hold on;
+plot([0 tc_count+1], [1 1], '-. black');
+hold off;
+legend('f(G) = k_G', 'f(G) = k_G n_G', 'f(G) = k^2_G n_G', 'warto¶æ referencyjna')
+xlabel('Nr obwodu testowego')
+ylabel('Wzglêdna wydajno¶æ symulacji obwodu zredukowanego')
+print(fullfile(EXPORTS_DIR, 'cost_func.eps'), '-depsc')

@@ -1,5 +1,6 @@
 % Experiment 1: search for better cost function in reduction phase
 testcases = dir(fullfile('test_suites', 'big', '*.mat'));
+testcases = testcases(1:end-1);
 tc_count = length(testcases);
 
 RESULTS_DIR = fullfile('results', 'ex4_early_exit');

@@ -1,5 +1,6 @@
 % Experiment 2: nesdisres algorithm vs others
 testcases = dir(fullfile('test_suites', 'big', '*.mat'));
+testcases = testcases(1:end-1);
 tc_count = length(testcases);
 
 RESULTS_DIR = fullfile('results', 'ex2_nesdisred_camd');
@@ -11,19 +12,16 @@ mkdir(EXPORTS_DIR);
 REFERENCE_DIR = fullfile('results', 'reference');
 
 % Test matrix definition - reduction params
+testMatrix_costFuncs = {@cost_res2_nodes};
 testMatrix_costFuncs_empty = {[]};
-testMatrix_costFuncs = {@cost_res2_nodes};  % @count_resistors, 
-
-testMatrix_nesDisOpts = {[5 0 1 0], [200 0 1 0]};
-% [10 0 1 0], [20 0 1 0], [50 0 1 0], [100 0 1 0], 
-
+testMatrix_nesDisOpts = {[1000 0 1 0]};
+testMatrix_nesDisDummyOpts = {[5 0 1 0]};
 testMatrix_emptyNesDisOpts = {[]};
 
 testMatrix = [
-    allcomb({'camd'}, testMatrix_costFuncs, testMatrix_emptyNesDisOpts);
-    allcomb({'recursive_amd'}, testMatrix_costFuncs, testMatrix_emptyNesDisOpts);
-    allcomb({'nesdis_dummy'}, testMatrix_costFuncs_empty, testMatrix_nesDisOpts);
     allcomb({'nesdis_camd'}, testMatrix_costFuncs, testMatrix_nesDisOpts);
+    allcomb({'nesdis_dummy'}, testMatrix_costFuncs_empty, testMatrix_nesDisDummyOpts);
+    allcomb({'camd'}, testMatrix_costFuncs, testMatrix_emptyNesDisOpts);
 ];
 
 for c = testMatrix'
@@ -38,6 +36,7 @@ for c = testMatrix'
     % build struct
     options = struct;
     options.verbose = 0;
+    options.early_exit = 1;
     options.nodewise_algorithm = elimScheme;
     options.graph_algorithm = 'standard';
     if ~isempty(costFunc)
@@ -78,13 +77,11 @@ for c = testMatrix'
 end
 
 selectMatrix = [
-    allcomb({'camd'}, {@cost_res2_nodes}, testMatrix_emptyNesDisOpts);
-    allcomb({'recursive_amd'}, {@cost_res2_nodes}, testMatrix_emptyNesDisOpts);
-    allcomb({'nesdis_dummy'}, {[]}, {[5 0 1 0]});
-    allcomb({'nesdis_camd'}, {@cost_res2_nodes}, {[200 0 1 0]});
+    allcomb({'nesdis_camd'}, testMatrix_costFuncs, testMatrix_nesDisOpts);
+    allcomb({'nesdis_dummy'}, testMatrix_costFuncs_empty, testMatrix_nesDisDummyOpts);
+    allcomb({'camd'}, testMatrix_costFuncs, testMatrix_emptyNesDisOpts);
 ];
-
-group_count = length(selectMatrix);
+group_count = size(selectMatrix, 1);
 
 time_solve_orig = nan(tc_count, group_count);
 time_solve_red = nan(tc_count, group_count);
@@ -137,16 +134,17 @@ writetable(T, fullfile(EXPORTS_DIR, 'nesdisred_camd_cmp.csv'))
 
 figure;
 bar(time_solve_orig ./ time_solve_red)
-legend('camd', 'ramd', 'nesdisred(5)', 'nesdisred(50) + camd')
+hold on;
+plot([0 tc_count+1], [1 1], '-. black');
+hold off;
+legend('nesdisred(1000, camd)', 'nesdisred(5)', 'camd', 'obwód niezredukowany')
 ylabel('t_{orig} / t_{red} [s/s]')
 xlabel('Nr obwodu testowego')
-set(gca,'yscale','log')
 print(fullfile(EXPORTS_DIR, 'solve_time.eps'), '-depsc')
 
 figure;
 bar(red_total_time);
-legend('camd', 'ramd', 'nesdisred(5)', 'nesdisred(50) + camd')
+legend('nesdisred(1000, camd)', 'nesdisred(5)', 'camd')
 ylabel('Czas trwania procesu redukcji [s]')
 xlabel('Nr obwodu testowego')
-set(gca,'yscale','log')
 print(fullfile(EXPORTS_DIR, 'reduction_time.eps'), '-depsc')
