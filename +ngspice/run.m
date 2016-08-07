@@ -11,7 +11,7 @@ end
 
 spice_path = '/usr/local/bin/ngspice';
 cmdline = strjoin({proxy, spice_path, '-b', input_file, '-o', output_file}, ' ');
-retcode = system(cmdline);
+retcode = system([cmdline '> /dev/null']);
 if retcode ~= 0
     error('spice:call',...,
         '%s retcode: %d',...,
