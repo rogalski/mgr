@@ -49,3 +49,9 @@ expected = 0.005621;
 result = ngspice.get_matrix_solve_time(fullfile('unittest_resources', 'ngspice.log'));
 testCase.assertEqual(expected, result);
 end
+
+function test_get_matrix_load_time(testCase)
+expected = 0.014116;
+result = ngspice.get_matrix_load_time(fullfile('unittest_resources', 'ngspice.log'));
+testCase.assertEqual(expected, result);
+end
