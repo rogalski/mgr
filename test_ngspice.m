@@ -31,3 +31,21 @@ expected = 8438;
 result = ngspice.get_circuit_total_nonzeroes(fullfile('unittest_resources', 'ngspice.log'));
 testCase.assertEqual(expected, result);
 end
+
+function test_get_matrix_reorder_time(testCase)
+expected = 0.00084;
+result = ngspice.get_matrix_reorder_time(fullfile('unittest_resources', 'ngspice.log'));
+testCase.assertEqual(expected, result);
+end
+
+function test_get_matrix_factor_time(testCase)
+expected = 0.009396;
+result = ngspice.get_matrix_factor_time(fullfile('unittest_resources', 'ngspice.log'));
+testCase.assertEqual(expected, result);
+end
+
+function test_get_matrix_solve_time(testCase)
+expected = 0.005621;
+result = ngspice.get_matrix_solve_time(fullfile('unittest_resources', 'ngspice.log'));
+testCase.assertEqual(expected, result);
+end
