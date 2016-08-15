@@ -1,6 +1,6 @@
 function [output_file] = run_neato(filename, extra_args)
 if nargin < 2
-   extra_args = '';
+    extra_args = '';
 end
 [pathstr,name,~] = fileparts(filename);
 output_file = fullfile(pathstr,[name '.png']);

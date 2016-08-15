@@ -35,10 +35,10 @@ for biconn_comp_id = 1:max(biconn_components)
         g = sum(G(articulation_node, biconn_comp_nodes));
         G(biconn_comp_nodes, biconn_comp_nodes) = 0;
         G(articulation_node, articulation_node) = g;
-
+        
         removed_nodes(biconn_comp_nodes) = 1;
         removed_nodes(articulation_node) = 0;
-
+        
     elseif length(biconn_comp_nodes) == 2
         continue
     elseif (a_node_count == 2 && terminal_count == 0) || (a_node_count == 1 && terminal_count == 1)
@@ -60,7 +60,7 @@ for biconn_comp_id = 1:max(biconn_components)
         Gi = G11-(G12*(G22\(G12')));
         G(biconn_comp_nodes, biconn_comp_nodes) = 0;
         G(to_keep, to_keep) = Gi;
-
+        
         removed_nodes(to_remove) = 1;
     else
         %{

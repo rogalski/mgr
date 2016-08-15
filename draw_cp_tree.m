@@ -5,10 +5,10 @@ hold on;
 for i=1:length(x)
     members = find(cmember==i);
     if length(members) > 10
-       string = sprintf('%d nodes', length(members));
+        string = sprintf('%d nodes', length(members));
     else
-    string = sprintf('%d, ', members);
-    string = ['\{', string(1:end-2), '\}'];
+        string = sprintf('%d, ', members);
+        string = ['\{', string(1:end-2), '\}'];
     end
     text(x(i), y(i) - 0.02/h, string, ...
         'HorizontalAlignment', 'center', ...

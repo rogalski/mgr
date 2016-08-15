@@ -7,7 +7,7 @@ if length(old_ext_nodes) > 100
     terminals_selection = randsample(old_ext_nodes, 100);
     terminal_pairs_to_check = nchoosek(terminals_selection, 2);
 else
-   terminal_pairs_to_check = nchoosek(old_ext_nodes, 2); 
+    terminal_pairs_to_check = nchoosek(old_ext_nodes, 2);
 end
 
 disp prepare1

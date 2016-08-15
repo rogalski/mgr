@@ -15,7 +15,7 @@ testMatrix = [
     allcomb({'camd', 'recursive_amd'}, testMatrix_costFuncs, testMatrix_emptyNesDisOpts);
     allcomb({'nesdis_dummy'}, testMatrix_costFuncs_empty, testMatrix_nesDisOpts);
     allcomb({'nesdis_camd'}, testMatrix_costFuncs, testMatrix_nesDisOpts);
-];
+    ];
 
 mkdir('results')
 for c = testMatrix'
@@ -42,7 +42,7 @@ for c = testMatrix'
         options.nesdis_opts = nesdisOpts;
     end
     options
-
+    
     % Dummy throwaway run to allow JIT to do it's magic
     disp('Warmup run')
     N = 8;
@@ -62,16 +62,16 @@ for c = testMatrix'
         end
         tc_name
         load(fname);
-       
+        
         input_circuit_info = circuit_info(G, is_ext_node);
-
+        
         tic
         output = reducer(G, is_ext_node, options);
         output.total_time = toc;
         
         i = input_for_circuit_composite_info(output);
         output_circuit_info = circuit_composite_info(i{:});
-
+        
         dst = fullfile(result_dir, [tc_name '.mat']);
         save(dst, 'input_circuit_info', 'output', 'output_circuit_info', 'G', 'is_ext_node');
     end

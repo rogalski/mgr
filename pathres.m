@@ -1,4 +1,4 @@
-% Inputs: 
+% Inputs:
 % G: conductance matrix
 % ea, eb: a-th and b-th unit vector
 % Output:

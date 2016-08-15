@@ -26,7 +26,7 @@ for n=1:nodes_to_eliminate
             Gi = Gi(local_perm, local_perm);
         end
         ext_nodes_moved = ext_nodes_moved + 1;
-    end                         
+    end
     G11 = Gi(1, 1);
     G12 = Gi(1, 2:end);
     G22 = Gi(2:end, 2:end);

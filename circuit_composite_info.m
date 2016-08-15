@@ -9,10 +9,10 @@ for k = 1:num_circuits
     is_ext_node = varargin{2*k};
     infos{k} = circuit_info(G, is_ext_node);
     if infos{k}.num_conn_components > 1
-       warning('Pair %d has more than one connected component', k) 
+        warning('Pair %d has more than one connected component', k)
     end
 end
-    
+
 info = struct;
 info.num_nodes = sum(cellfun(@(s) s.num_nodes, infos));
 info.num_external = sum(cellfun(@(s) s.num_external, infos));

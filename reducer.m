@@ -10,7 +10,7 @@ function out = reducer( G, is_ext_node, options )
 assert(length(is_ext_node) == size(G, 1));
 
 if nargin < 3
-   options = struct; 
+    options = struct;
 end
 
 options = build_reducer_options(options);
@@ -44,13 +44,13 @@ for conn_comp_i = 1:length(components_to_process)
     conn_comp_id = components_to_process(conn_comp_i);
     conn_comp_sel = (out.components == conn_comp_id);
     if options.verbose
-       fprintf('Component %d/%d (%d nodes)\n', conn_comp_id, connected_components_count, nnz(conn_comp_sel));
+        fprintf('Component %d/%d (%d nodes)\n', conn_comp_id, connected_components_count, nnz(conn_comp_sel));
     end
     conn_comp_A = out.A(conn_comp_sel, conn_comp_sel);
     conn_comp_G = G(conn_comp_sel, conn_comp_sel);
     conn_comp_is_ext_node = is_ext_node(conn_comp_sel);
     global_context = find(conn_comp_sel);
-
+    
     if ~any(conn_comp_is_ext_node)
         d.G = sparse(0, 0);
         d.is_ext_node = [];
@@ -68,13 +68,13 @@ for conn_comp_i = 1:length(components_to_process)
     % Eliminate nodes one-by-one
     nodewise_timer = tic;
     d = options.nodewise_algorithm(after_graph.G, after_graph.is_ext_node, options);
-    nodewise_processing_time = toc(nodewise_timer); 
-
+    nodewise_processing_time = toc(nodewise_timer);
+    
     d.new_nodes = global_context(after_graph.new_nodes(d.new_nodes));
     d.graph_processing_time = graph_processing_time;
     d.nodewise_processing_time = nodewise_processing_time;
     out.c{conn_comp_id} = d;
     if (options.auto_save)
-      save(options.output_file, 'out');
+        save(options.output_file, 'out');
     end
 end

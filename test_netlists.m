@@ -1,15 +1,15 @@
 classdef test_netlists < matlab.unittest.TestCase
- 
+    
     properties
         tmpFileName
     end
- 
+    
     methods(TestMethodSetup)
         function createTmpFile(testCase)
             testCase.tmpFileName = tempname;
         end
     end
- 
+    
     methods(TestMethodTeardown)
         function deleteTmpFile(testCase)
             delete(testCase.tmpFileName)
@@ -23,7 +23,7 @@ classdef test_netlists < matlab.unittest.TestCase
         end
         
     end
- 
+    
     methods(Test)
         function dumpDefaultNodeNames(testCase)
             G = [1, -1; -1, 1];
@@ -33,7 +33,7 @@ classdef test_netlists < matlab.unittest.TestCase
             testCase.verifyEqual(result{1}(1), '*')
             testCase.verifyEqual(result{2}, 'R1 1 2 1')
         end
-
+        
         function dumpCustomNodeNames(testCase)
             G = [1.5, -0.5, -1; -0.5, 1, -0.5; -1, -1, 2];
             netlists.dump(testCase.tmpFileName, G, [], 4:6)
@@ -44,7 +44,7 @@ classdef test_netlists < matlab.unittest.TestCase
             testCase.verifyEqual(result{3}, 'R2 4 6 1')
             testCase.verifyEqual(result{4}, 'R3 5 6 2')
         end
-
+        
         function dumpComposite(testCase)
             G = [1, -1; -1, 1];
             netlists.dump_composite(testCase.tmpFileName, G, [], 1:2, G, [], 4:5)
@@ -57,7 +57,7 @@ classdef test_netlists < matlab.unittest.TestCase
             testCase.verifyEqual(result{4}, '* Connected component 2')
             testCase.verifyEqual(result{5}, 'R2 4 5 1')
         end
-
+        
         function dumpWithTerminals(testCase)
             G = [1.5, -0.5, -1; -0.5, 1, -0.5; -1, -1, 2];
             rng(0);  % freeze rng seed
