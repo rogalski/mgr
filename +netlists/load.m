@@ -1,6 +1,6 @@
 function [ G ] = load( file )
 % loads  Loads spice file as G conductance matrix.
-% 
+%
 % Input:
 %   file: source filename
 % Output:
@@ -18,7 +18,7 @@ line = fgetl(handle);  % Skip first (comment line)
 while ischar(line)
     switch line(1)
         case '*'
-           % do nothing with comment
+            % do nothing with comment
         case 'R'
             fields = strsplit(line, ' ');
             node1 = str2double(cell2mat(fields(2)));

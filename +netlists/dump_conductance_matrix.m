@@ -9,7 +9,7 @@ for k = 1:length(v)
     n = j(k);
     el = v(k);
     if isnan(el)
-       continue 
+        continue
     end
     if m == n
         ri = 1/sums(m);
@@ -24,7 +24,7 @@ for k = 1:length(v)
     end
     r_count = r_count + 1;
     n1 = node_ids(m);
-
+    
     fprintf(handle,'R%i %i %i %s\n', r_count, n1, n2, num2str(ri));
 end
 end

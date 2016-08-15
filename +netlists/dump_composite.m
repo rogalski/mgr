@@ -1,6 +1,6 @@
 function dump_composite(filename, varargin)
 % DUMP_COMPOSITE  Dumps multiple conductance matrices as Spice *.cir file.
-% 
+%
 % Input:
 %   filename - name of file where dump should be made
 %   Triplets of (G, is_ext_node, node_ids), where:
