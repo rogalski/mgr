@@ -8,7 +8,7 @@ circuits = {
     {@load_mrewiens, 'o1'}
     };
 
-is_non_trivial = @(i) i.num_nodes >= 80 && i.num_external >= 4 && i.num_internal >= 10;
+is_non_trivial = @(i) i.num_nodes >= 100 && i.num_external >= 5 && i.num_internal >= 10;
 
 counter = 0;
 
