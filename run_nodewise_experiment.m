@@ -1,4 +1,4 @@
-function [datapoints, cost_values, ngspice_times] = run_nodewise_experiment( G, is_ext_node, step, cost_func_handles, ngspice_func_handles, tmp_dir, do_camd )
+function [datapoints, cost_values, ngspice_times] = run_nodewise_experiment( G, is_ext_node, step, cost_func_handles, ngspice_func_handles, tmp_dir, do_camd, iterations )
 if do_camd
     perm = camd(G, camd, is_ext_node+1);
 else
@@ -14,6 +14,8 @@ datapoints_length = length(datapoints);
 cost_values = nan(length(cost_func_handles), datapoints_length);
 ngspice_times = nan(length(ngspice_func_handles), datapoints_length);
 
+samples = nan(length(ngspice_func_handles), iterations);
+
 mkdir(tmp_dir);
 
 for k=1:to_remove_size
@@ -26,11 +28,16 @@ for k=1:to_remove_size
         cirfile = fullfile(tmp_dir, [num2str(k) '.cir']);
         netlists.dump(cirfile, G, is_ext_node(k+1:end), k+1:input_size)
         
-        log_file = ngspice.run(cirfile);
-        for fun_index=1:length(ngspice_func_handles)
-            ngspice_fun=ngspice_func_handles{fun_index};
-            ngspice_times(fun_index, datapoint) = ngspice_fun(log_file);
+        ngspice_times(:, datapoint) = 0;
+        for iter=1:iterations
+            log_file = ngspice.run(cirfile);
+            for fun_index=1:length(ngspice_func_handles)
+                ngspice_fun=ngspice_func_handles{fun_index};
+                samples(fun_index, iter) = ngspice_fun(log_file);
+            end
+            movefile(log_file, [log_file '.' num2str(iter)])
         end
+        ngspice_times(:, datapoint) = mean(samples, 2);
         
         for fun_index=1:length(cost_func_handles)
             cost_fun=cost_func_handles{fun_index};
