@@ -28,24 +28,24 @@ for ee = testMatrix_earlyexit'
         fname = fullfile('test_suites', 'big', f.name);
         [tc_dir, tc_name, ext] = fileparts(f.name);
         output_filename = @(isEarlyExit, suffix) fullfile(RESULTS_DIR, [tc_name num2str(isEarlyExit) '.' suffix]);
-
+        
         if exist(output_filename(ee, 'mat'), 'file') == 2
             continue
         end
- 
+        
         tc_name
         load(fname);
         input_circuit_info = circuit_info(G, is_ext_node);
-
+        
         tic
         output = reducer(G, is_ext_node, options);
         output.total_time = toc;
         
         i = input_for_circuit_composite_info(output);
         output_circuit_info = circuit_composite_info(i{:});
-
+        
         save(output_filename(ee, 'mat'), 'input_circuit_info', 'output', 'output_circuit_info', 'G', 'is_ext_node');
-
+        
         i = input_for_dump(output);
         netlists.dump_composite(output_filename(ee, 'cir'), i{:});
         ngspice.run(output_filename(ee, 'cir'));
@@ -68,13 +68,13 @@ tc_num = 0;
 for f = testcases'
     [tc_dir, tc_name, ext] = fileparts(f.name);
     output_filename = @(isEarlyExit, suffix) fullfile(RESULTS_DIR, [tc_name num2str(isEarlyExit) '.' suffix]);
-
+    
     tc_num = tc_num+1;
     group_num = 0;
     for isEarlyExit = testMatrix_earlyexit'
         group_num = group_num+1;
         load(output_filename(isEarlyExit, 'mat'),  'input_circuit_info', 'output', 'output_circuit_info', 'G', 'is_ext_node');
-
+        
         num_nodes_orig(tc_num, 1) = input_circuit_info.num_nodes;
         num_nodes_red(tc_num, group_num) = output_circuit_info.num_nodes;
         num_term_orig(tc_num, 1) = input_circuit_info.num_external;
@@ -82,7 +82,7 @@ for f = testcases'
         num_res_orig(tc_num, 1) = input_circuit_info.num_resistors;
         num_res_red(tc_num, group_num) = output_circuit_info.num_resistors;
         red_total_time(tc_num, group_num) = output.total_time;
-
+        
         time_solve_orig(tc_num, group_num) = ngspice.get_simulation_time(fullfile(REFERENCE_DIR, [tc_name '.log']));
         time_solve_red(tc_num, group_num) = ngspice.get_simulation_time(output_filename(isEarlyExit, 'log'));
     end
@@ -111,9 +111,9 @@ early_stop = find(sample2.output.c{cid}.fillin_tracker == 0, 1) - 1;
 
 figure;
 semilogy(1:length(l2), l2, '-b', 1:length(l1), l1, '--b', ...
-         best_elim, l1(best_elim), 'ob', ...
-         early_stop, l2(early_stop), 'xr', ...
-         'MarkerSize', 8, 'MarkerFaceColor','auto');
+    best_elim, l1(best_elim), 'ob', ...
+    early_stop, l2(early_stop), 'xr', ...
+    'MarkerSize', 8, 'MarkerFaceColor','auto');
 legend('Funkcja kosztu symulacji (wczesne wyj¶cie)',...
     'Funkcja kosztu symulacji (bez wczesnego wyj¶cia)', ...
     'Minimum funkcji kosztu', ...
@@ -135,9 +135,9 @@ early_stop = find(sample2.output.c{cid}.fillin_tracker == 0, 1) - 1;
 
 figure;
 semilogy(1:length(l2), l2, '-b', 1:length(l1), l1, '--b', ...
-         best_elim, l1(best_elim), 'ob', ...
-         early_stop, l2(early_stop), 'xr', ...
-         'MarkerSize', 8, 'MarkerFaceColor','auto');
+    best_elim, l1(best_elim), 'ob', ...
+    early_stop, l2(early_stop), 'xr', ...
+    'MarkerSize', 8, 'MarkerFaceColor','auto');
 legend('Funkcja kosztu symulacji (wczesne wyj¶cie)',...
     'Funckja kosztu symulacji (bez wczesnego wyj¶cia)', ...
     'Minimum funkcji kosztu', ...
