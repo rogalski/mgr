@@ -8,22 +8,22 @@ Z1 = zeros(N, N);
 % Adjacency matrix
 A1 = sign(conv2(eye(N), ones(2),'same')) - eye(N);
 A = [A1, Z1, ones(N, 1);
-     Z1, A1, ones(N, 1);
-     ones(1, 2*N) 0];
+    Z1, A1, ones(N, 1);
+    ones(1, 2*N) 0];
 
 % Conductance matrix
 G1 = -sign(conv2(eye(N), ones(2),'same')) + eye(N);
 G1(1:N+1:end) = -sum(G1) + 1;
 
 G = [G1, Z1, -ones(N, 1);
-     Z1, G1, -ones(N, 1);
-     -ones(1, 2*N) 2*N];
+    Z1, G1, -ones(N, 1);
+    -ones(1, 2*N) 2*N];
 
 is_ext_node = [repmat([0, 1, 1, 0], [1, N/2]) 0]';
 
-%input problem 
+%input problem
 dotfiles.dump(get_filename('graph_full.dot'), G, is_ext_node);
-run_neato(get_filename('graph_full.dot'), '-Gstart=3');
+graphviz.run_neato(get_filename('graph_full.dot'), '-Gstart=3');
 
 % separation tree
 [c, cp, cmember] = nesdis(G, 'sym', [N+1 0 1 0]);
@@ -45,7 +45,7 @@ G22 = G(to_remove, to_remove);
 Gnosep = G11-(G12*(G22\(G12')));
 
 dotfiles.dump(get_filename('graph_nosep.dot'), Gnosep, is_ext_node(to_keep));
-run_neato(get_filename('graph_nosep.dot'), '-Gstart=1');
+graphviz.run_neato(get_filename('graph_nosep.dot'), '-Gstart=1');
 
 % remove both leafs
 sel = [1:4 9];
