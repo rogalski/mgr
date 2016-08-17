@@ -2,7 +2,7 @@
 close all;
 testcases = dir(fullfile('test_suites', 'basic', '*.mat'));
 testcases = sortStruct(testcases, 'bytes');
-testcases = testcases(1:5);
+testcases = testcases(1:40);
 
 tc_count = length(testcases);
 
@@ -16,6 +16,9 @@ ngspice_functions_legend = cellfun(@(h) func2str(h), ngspice_functions, 'Uniform
 
 cost_functions = {@count_resistors, @cost_res_nodes, @cost_res2_nodes};
 cost_functions_legend = cellfun(@(h) func2str(h), cost_functions, 'UniformOutput', 0);
+
+USE_CAMD = 1;
+ITERATIONS = 5;
 
 for f=testcases'
     fname = fullfile('test_suites', 'basic', f.name);
@@ -43,7 +46,8 @@ for f=testcases'
         end
     end
     
-    [datapoints, costs, stats] = run_nodewise_experiment(G, is_ext_node, step, cost_functions, ngspice_functions, tmp_dir, 1, 5);
+    [datapoints, costs, times_data] = run_nodewise_experiment(G, is_ext_node, step, cost_functions, ngspice_functions, tmp_dir, USE_CAMD, ITERATIONS);
+    stats = median(times_data, 3);
     for c_idx = 1:length(cost_functions)
         cost_func_name = cost_functions_legend(c_idx);
         figure('Visible', 'off');
