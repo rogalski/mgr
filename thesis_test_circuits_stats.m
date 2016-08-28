@@ -18,14 +18,23 @@ for idx=1:numel(circuits)
     component_sizes = [component_sizes; sizes]; %#ok<AGROW>
 end
 
+figure;
 max_edge = ceil(log10(max(component_sizes)));
 edges = floor(logspace(0, max_edge, max_edge+1));
-histogram(component_sizes, edges)
+h = histogram(component_sizes, edges);
+
 set(gca,'XScale','log');
 title('Rozmiar sk³adowych spójnych w obwodach testowych: histogram')
 xlabel('Rozmiar sk³adowych')
 ylabel('Ilo¶æ sk³adowych')
 
+d = power(10, (1:h.NumBins)-0.5);
+for idx=1:length(d)
+    v = h.Values(idx);
+    text(d(idx), v, num2str(v), 'HorizontalAlignment','center', 'VerticalAlignment','bottom')
+end
+
 XTick = get(gca, 'XTick');
 XTickLabels = cellstr(num2str(round(log10(XTick(:))), '10^%d'));
 set(gca, 'XTickLabel', XTickLabels);
+set(gca,'Position',[.05 .05 .9 .9])
