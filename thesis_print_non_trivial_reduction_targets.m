@@ -9,7 +9,7 @@ circuits = {
     };
 
 is_non_trivial = @(i) i.num_nodes >= 20 && i.num_external >= 5 && i.num_internal >= 5;
-is_close = @(i1,i2) abs(i1.num_nodes - i2.num_nodes) < 3 && abs(i1.num_internal - i2.num_internal) < 3 && abs(i1.num_external - i2.num_external) < 3;
+is_close = @(i1, i2) abs(i1.num_nodes - i2.num_nodes) < 3 && abs(i1.num_internal - i2.num_internal) < 3 && abs(i1.num_external - i2.num_external) < 3;
 
 counter = 0;
 
@@ -26,15 +26,20 @@ for idx=1:numel(circuits)
     
     for ci = 1:max(c)
         s = c==ci;
-        cG = G(s, s);
-        cis_ext_node = is_ext_node(s);
+        cGx = G(s, s);
+        cis_ext_nodex = is_ext_node(s);
+
+        o = graph_reduce( cGx, cis_ext_nodex, adj(cGx) );
+        cG = o.G;
+        cis_ext_node = o.is_ext_node;
         
         info = circuit_info(cG, cis_ext_node);
         infos(ci) = info;
-        assert(info.num_conn_components == 1)
+        assert(info.num_conn_components <= 1)
         
         if ~is_non_trivial(info)
             matched(ci) = 0;
+            continue
         end
         % this is O(n^2), but we do not give a damn, it's only helper
         for co=1:ci-1
@@ -50,6 +55,7 @@ for idx=1:numel(circuits)
             counter = counter + 1;
             if VERBOSE
                 fprintf(1, '%d. %s component %d\n', counter, circuit_name, ci);
+                disp(infos(ci))
             end
         end
     end
