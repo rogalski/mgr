@@ -3,7 +3,7 @@ if nargin < 3
     extra_args = '';
 end
 [pathstr,name,~] = fileparts(filename);
-output_file = fullfile(pathstr,[name '.png']);
+output_file = fullfile(pathstr,[name '.eps']);
 cmdline = strjoin({['/usr/local/bin/' cmd], extra_args, filename, '-Tpng', ['-o' output_file]}, ' ');
 retcode = system(cmdline);
 if retcode ~= 0
