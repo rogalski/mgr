@@ -1,9 +1,11 @@
 close all;
 
-get_filename = @(s) ['nesdisred_example1_' s];
+get_filename = @(s) ['exports/nesdisred_example1/' s];
 
 N = 4;
 Z1 = zeros(N, N);
+
+mkdir('exports/nesdisred_example1')
 
 % Adjacency matrix
 A1 = sign(conv2(eye(N), ones(2),'same')) - eye(N);
@@ -23,7 +25,7 @@ is_ext_node = [repmat([0, 1, 1, 0], [1, N/2]) 0]';
 
 %input problem
 dotfiles.dump(get_filename('graph_full.dot'), G, is_ext_node);
-graphviz.run_neato(get_filename('graph_full.dot'), '-Gstart=3');
+graphviz.run_neato(get_filename('graph_full.dot'), '-Gstart=5');
 
 % separation tree
 [c, cp, cmember] = nesdis(G, 'sym', [N+1 0 1 0]);
@@ -45,7 +47,7 @@ G22 = G(to_remove, to_remove);
 Gnosep = G11-(G12*(G22\(G12')));
 
 dotfiles.dump(get_filename('graph_nosep.dot'), Gnosep, is_ext_node(to_keep));
-graphviz.run_neato(get_filename('graph_nosep.dot'), '-Gstart=1');
+graphviz.run_neato(get_filename('graph_nosep.dot'), '-Gstart=5 -Gsplines=1');
 
 % remove both leafs
 sel = [1:4 9];
