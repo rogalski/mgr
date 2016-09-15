@@ -1,4 +1,5 @@
 VERBOSE = 0;
+PURGE = 0;
 RESULTS_DIR = fullfile('test_suites', 'basic');
 rmdir(RESULTS_DIR, 's');
 mkdir(RESULTS_DIR);
@@ -91,3 +92,4 @@ num_nodes_i = [all_infos(:).num_internal]';
 num_nodes_e = [all_infos(:).num_external]';
 num_res = [all_infos(:).num_resistors]';
 t = table(indicies, num_nodes_t, num_nodes_i, num_nodes_e, num_res, circuit_num, ccid)
+writetable(t, 'tc_basic.csv');
