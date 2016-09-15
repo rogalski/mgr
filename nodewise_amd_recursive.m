@@ -2,7 +2,7 @@
 % defined in Rommes and Schilders publication.
 %
 % See also NODEWISE_ABSTRACT.
-function reduced_data = nodewise_amd_recursive( G, is_ext_node, ~ )
+function reduced_data = nodewise_amd_recursive( G, is_ext_node, options )
 
 reorder_function = @amd;
 reduced_data = struct;
