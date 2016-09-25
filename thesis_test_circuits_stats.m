@@ -37,6 +37,6 @@ end
 XTick = get(gca, 'XTick');
 XTickLabels = cellstr(num2str(round(log10(XTick(:))), '10^%d'));
 set(gca, 'XTickLabel', XTickLabels);
-set(gca,'Position',[.05 .05 .9 .9])
+set(gca,'Position',[.05 .08 .9, 0.87])
 print('exports/hist.eps','-depsc2')
 close all;
