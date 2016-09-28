@@ -1,4 +1,4 @@
-% Runs reference (non-reduced) measurements for 
+% Runs reference (non-reduced) measurements for
 
 testcases = dir(fullfile('test_suites', 'big', '*.mat'));
 tc_count = length(testcases);
@@ -16,7 +16,7 @@ for f = testcases'
     end
     tc_name
     load(fname);
-
+    
     if ~exist(output_filename('.cir'), 'file')
         netlists.dump(output_filename('.cir'), G, is_ext_node);
     end

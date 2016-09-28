@@ -81,7 +81,7 @@ end
 
 all_infos = sortStruct(all_infos, 'num_nodes');
 for idx=1:length(all_infos)
-   movefile(all_infos(idx).fname, fullfile(RESULTS_DIR, [num2str(idx, '%.3d') '.mat']))
+    movefile(all_infos(idx).fname, fullfile(RESULTS_DIR, [num2str(idx, '%.3d') '.mat']))
 end
 
 indicies = [1:length(all_infos)]';
